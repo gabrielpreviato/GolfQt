@@ -5,6 +5,7 @@
 
 #include "Physics-Constants.hpp"
 #include "Vec2.hpp"
+#include "Structure.hpp"
 
 namespace Physics {
 
@@ -52,6 +53,15 @@ namespace Physics {
 
 			//qDebug() << "Speed: " << speed.x << "; Position: " << position.x ;
 			speed.zero_normalize(SIGMA);
+		}
+
+		Structure bounding_box() {
+			return Structure(
+				position * 100 - Vec2d(radius, radius),
+				position * 100 - Vec2d(0, radius) + Vec2d(radius, 0),
+				position * 100 - Vec2d(radius, 0) + Vec2d(0, radius),
+				position * 100 + Vec2d(radius, radius)
+			);
 		}
 
 	private:
