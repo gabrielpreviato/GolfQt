@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GolfQt", "GolfQt\GolfQt.vcxproj", "{6ACC710D-9434-4A97-AECB-22B5E7CEC27B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6ACC710D-9434-4A97-AECB-22B5E7CEC27B}.Debug|x64.ActiveCfg = Debug|x64
+		{6ACC710D-9434-4A97-AECB-22B5E7CEC27B}.Debug|x64.Build.0 = Debug|x64
+		{6ACC710D-9434-4A97-AECB-22B5E7CEC27B}.Release|x64.ActiveCfg = Release|x64
+		{6ACC710D-9434-4A97-AECB-22B5E7CEC27B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C8752147-ECE5-48B4-BF17-542C00852CE1}
+	EndGlobalSection
+EndGlobal
