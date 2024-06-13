@@ -1,4 +1,5 @@
 #include "SpatialHashMap.hpp"
+#include <unordered_set>
 #include <qDebug>
 
 SpatialHashMap::SpatialHashMap(unsigned int x_size, unsigned int y_size, unsigned int cell_size)
@@ -55,14 +56,14 @@ std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Struct
 
     qDebug() << min_x << "; " << min_y << "; " << max_x << "; " << max_y;
 
-    auto possible_obj_collision = std::vector<Physics::Structure*>{};
+    auto possible_obj_collision = std::unordered_set<Physics::Structure*>{};
     for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {
         for (auto j = coord_to_cell(min_x); j <= coord_to_cell(max_x, true); j++) {
-            possible_obj_collision.insert(possible_obj_collision.end(), map[i][j].begin(), map[i][j].end());
+            possible_obj_collision.insert(map[i][j].begin(), map[i][j].end());
         }
     }
 
-    return possible_obj_collision;
+    return std::vector<Physics::Structure*>(possible_obj_collision.begin(), possible_obj_collision.end());
 }
 
 std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Object& object) {
