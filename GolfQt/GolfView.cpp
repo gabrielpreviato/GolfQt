@@ -43,7 +43,7 @@ void GolfView::receive_walls(std::vector<Physics::Structure> walls) {
 void GolfView::render_objects() {
     for (auto& golf_ball : m_golf_balls) {
         m_gameScene->removeItem(golf_ball);
-        //delete golf_ball;
+        delete golf_ball;
     }
     m_golf_balls.clear();
 
@@ -53,8 +53,6 @@ void GolfView::render_objects() {
         //qDebug() << "Redered object:" << object.position.x << ", " << object.position.y;
         m_golf_balls.push_back(golf_ball);
     }
-
-    //qDebug() << "Redered objects";
 
     QPointF cursor_pos = this->mapFromGlobal(QCursor::pos());
     if (m_objects.size() > 0) {        
@@ -68,7 +66,6 @@ void GolfView::render_objects() {
     }
 
     for (auto& wall : m_walls) {
-
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
             QPolygonF(
                 QList<QPointF>{
