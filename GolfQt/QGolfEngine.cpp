@@ -48,6 +48,7 @@ void QGolfEngine::run_tick() {
 				qDebug() << "Ball: " << bbox.v1.x << ", " << bbox.v1.y << "; " << bbox.v2.x << ", " << bbox.v2.y << "; " << bbox.v3.x << ", " << bbox.v3.y << "; " << bbox.v4.x << ", " << bbox.v4.y;
                 wall->set_color(QColor(255, 255, 0, 127));
 				future_o.speed = Vec2d(0, 0);
+				future_o.position = o.position;
             }
         }
 
