@@ -66,12 +66,7 @@ std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Struct
 }
 
 std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Object& object) {
-    Physics::Structure ball_structure = Physics::Structure(
-        object.position * 100 - Vec2d(object.radius, object.radius),
-        object.position * 100 - Vec2d(0, object.radius) + Vec2d(object.radius, 0),
-        object.position * 100 - Vec2d(object.radius, 0) + Vec2d(0, object.radius),
-        object.position * 100 + Vec2d(object.radius, object.radius)
-        );
+    Physics::Structure ball_structure = object.bounding_box();
 
     return broad_collision(ball_structure);
 }
