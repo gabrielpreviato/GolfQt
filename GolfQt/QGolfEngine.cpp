@@ -42,13 +42,21 @@ void QGolfEngine::run_tick() {
             auto bbox = future_o.bounding_box();
 
             if (bbox.projections_overlap(*wall)) {
-                qDebug() << "Collision!";
+                int edge = wall->detect_collision_edge(future_o.position * 100);
+				while (edge == -1) {
+                    future_o.reverse_tick(0.5);
+					edge = wall->detect_collision_edge(future_o.position * 100);
+				}
+                qDebug() << "Collision! " << edge;
 
 				qDebug() << "Wall: " << wall->v1.x << ", " << wall->v1.y << "; " << wall->v2.x << ", " << wall->v2.y << "; " << wall->v3.x << ", " << wall->v3.y << "; " << wall->v4.x << ", " << wall->v4.y;
 				qDebug() << "Ball: " << bbox.v1.x << ", " << bbox.v1.y << "; " << bbox.v2.x << ", " << bbox.v2.y << "; " << bbox.v3.x << ", " << bbox.v3.y << "; " << bbox.v4.x << ", " << bbox.v4.y;
                 wall->set_color(QColor(255, 255, 0, 127));
-				future_o.speed = Vec2d(0, 0);
-				future_o.position = o.position;
+				
+                Vec2d collisionNormal = wall->get_normal(edge); // You need to implement get_normal() based on your wall structure
+
+                future_o.speed = future_o.speed.reflect(collisionNormal);
+                future_o.position -= collisionNormal * 0.01; // Adjust the multiplier as needed
             }
         }
 

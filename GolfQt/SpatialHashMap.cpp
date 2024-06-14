@@ -1,8 +1,9 @@
 #include "SpatialHashMap.hpp"
 #include <unordered_set>
 #include <qDebug>
+#include <algorithm>
 
-SpatialHashMap::SpatialHashMap(unsigned int x_size, unsigned int y_size, unsigned int cell_size)
+SpatialHashMap::SpatialHashMap(int x_size, int y_size, int cell_size)
 : x_size(x_size), y_size(y_size), cell_size(cell_size) {
     n_cols = (x_size + cell_size - 1) / cell_size;
     n_rows = (y_size + cell_size - 1) / cell_size;
@@ -15,16 +16,16 @@ SpatialHashMap::SpatialHashMap(unsigned int x_size, unsigned int y_size, unsigne
 
 int SpatialHashMap::coord_to_cell(double coord, bool is_max) {
     double mod = std::fmod(coord, cell_size);
-    unsigned int cell = coord / cell_size;
+    int cell = coord / cell_size;
 
     if (!is_max && mod <= 0.2*cell_size && cell > 0) {
-        return cell - 1;
+        return std::max(cell - 1, 0);
     }
     else if (is_max && mod >= 0.8 * cell_size && cell < n_cols) {
-        return cell + 1;
+        return std::min(cell + 1, n_rows-1);
     }
     else {
-        return cell;
+        return std::min(cell, n_rows - 1);
     }
 }
 
@@ -41,8 +42,8 @@ int SpatialHashMap::add_structure(Physics::Structure& structure) {
     auto [min_x, min_y, max_x, max_y] = structure_bbox(structure);
 
     unsigned int n_mappings = 0;
-    for (auto i = coord_to_cell(min_y); i < coord_to_cell(max_y, true); i++) {
-        for (auto j = coord_to_cell(min_x); j < coord_to_cell(max_x, true); j++) {
+    for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {
+        for (auto j = coord_to_cell(min_x); j <= coord_to_cell(max_x, true); j++) {
             map[i][j].push_back(&structure);
             n_mappings++;
         }

@@ -9,7 +9,7 @@ public:
 
 	Vec2<T> normal() {
 		// (-dy, dx)
-		return Vec2<T>(-p2.y + p1.y, p2.x - p1.x);
+		return Vec2<T>(-p2.y + p1.y, p2.x - p1.x).unit();
 	}
 };
 

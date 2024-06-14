@@ -40,12 +40,12 @@ public:
         return *this;
     }
 
-    Vec2<T> operator+(const Vec2<T>& v) {
+    Vec2<T> operator+(const Vec2<T>& v) const {
         return Vec2<T>(x + v.x, y + v.y);
     }
 
     const Vec2<T>& operator+(Vec2<T>&& v) const {
-        return Vec2<T>(x - v.x, y - v.y);
+        return Vec2<T>(x + v.x, y + v.y);
     }
 
     Vec2<T>& operator+(Vec2<T>&& v) {
@@ -53,6 +53,10 @@ public:
         y += v.y;
 
         return *this;
+    }
+
+    Vec2<T> operator-(const Vec2<T>& v) const {
+        return Vec2<T>{x - v.x, y - v.y};
     }
 
     const Vec2<T>& operator-(Vec2<T>&& v) const {
@@ -87,6 +91,20 @@ public:
     Vec2<T>& operator+=(const Vec2<T>& v) {
         x += v.x;
         y += v.y;
+
+        return *this;
+    }
+
+    Vec2<T>& operator-=(Vec2<T>&& v) {
+        x -= v.x;
+        y -= v.y;
+
+        return *this;
+    }
+
+    Vec2<T>& operator-=(const Vec2<T>& v) {
+        x -= v.x;
+        y -= v.y;
 
         return *this;
     }
@@ -138,6 +156,18 @@ public:
     void zero_normalize(const double sigma) {
         std::abs(x) <= sigma ? x = 0.0 : 0;
         std::abs(y) <= sigma ? y = 0.0 : 0;
+    }
+
+    Vec2<T> reflect(const Vec2<T>& normal) {
+        // Assuming Vec2d has a dot product method
+        T speedDotNormal = this->dot(normal);
+		if (speedDotNormal < 0) {
+			// The angle is greater than 90 degrees, normal points inward, reflection needed.
+            speedDotNormal *= -1;
+		}
+        Vec2<T> reflection = *this - (normal * 2.0 * speedDotNormal);
+        
+        return reflection;
     }
 
 private:

@@ -8,7 +8,12 @@
 int main(int argc, char *argv[])
 {
     auto s = Physics::Structure({ 0, 300 }, { 200, 300 }, { 200, 350 }, { 0, 350 });
-    auto walls = std::vector<Physics::Structure>{ s };
+
+    auto wall1 = Physics::Structure({ 0, 0 }, { 400, 0 }, { 400, 10 }, { 0, 10 });
+    auto wall2 = Physics::Structure({ 0, 0 }, { 10, 0 }, { 10, 400 }, { 0, 400 });
+    auto wall3 = Physics::Structure({ 0, 390 }, { 400, 390 }, { 400, 400 }, { 0, 400 });
+    auto wall4 = Physics::Structure({ 390, 0 }, { 400, 0 }, { 400, 400 }, { 390, 400 });
+    auto walls = std::vector<Physics::Structure>{ s, wall1, wall2, wall3, wall4 };
 
     QApplication a(argc, argv);
     GolfQt w{ walls };

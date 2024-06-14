@@ -55,6 +55,16 @@ namespace Physics {
 			speed.zero_normalize(SIGMA);
 		}
 
+		void reverse_tick(double rate) {
+			//qDebug() << "Speed before: " << speed.x << "; Position before: " << position.x ;
+
+			position -= speed * TICK_RATE * rate;
+			//speed -= force * TICK_RATE * rate;
+
+			//qDebug() << "Speed: " << speed.x << "; Position: " << position.x ;
+			//speed.zero_normalize(SIGMA);
+		}
+
 		Structure bounding_box() {
 			return Structure(
 				position * 100 - Vec2d(radius, radius),

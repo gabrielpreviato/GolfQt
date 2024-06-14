@@ -9,14 +9,14 @@
 
 class SpatialHashMap {
 private:
-	unsigned int x_size, y_size;
-	unsigned int cell_size;
+	int x_size, y_size;
+	int cell_size;
 
-	unsigned int n_rows, n_cols;
+	int n_rows, n_cols;
 	std::vector<std::vector<std::vector<Physics::Structure*>>> map;
 
 public:
-	SpatialHashMap(unsigned int x_size, unsigned int y_size, unsigned int cell_size);
+	SpatialHashMap(int x_size, int y_size, int cell_size);
 	int coord_to_cell(double coord, bool is_max=false);
 	std::tuple<double, double, double, double> structure_bbox(Physics::Structure& structure);
 	int add_structure(Physics::Structure& structure);
