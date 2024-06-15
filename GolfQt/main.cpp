@@ -1,6 +1,7 @@
 #include "GolfQt.hpp"
 
 #include "QGolfEngine.hpp"
+#include "GolfMap.hpp"
 
 #include <QtWidgets/QApplication>
 #include <QThread>
@@ -17,6 +18,8 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     GolfQt w{ walls };
+
+    GolfMap map = GolfMap::load("C:/Users/gabri/Source/Repos/GolfQt/GolfQt/maps/map1.map");
 
     QGolfEngine* engine = new QGolfEngine(argc, argv, walls);
     QThread* engine_thread = new QThread();

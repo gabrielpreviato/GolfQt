@@ -20,6 +20,7 @@ namespace Physics {
 		QColor bg_color = QColor(0, 0, 0, 127);
 
 		Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4);
+        Structure(std::vector<Vec2d> points);
 
 		void set_color(QColor new_color) {
 			bg_color = new_color;

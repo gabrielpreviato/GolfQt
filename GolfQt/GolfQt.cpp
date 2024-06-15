@@ -1,5 +1,4 @@
 #include "GolfQt.hpp"
-#include "GolfScene.hpp"
 
 GolfQt::GolfQt(std::vector<Physics::Structure> walls, QWidget *parent)
     : QMainWindow(parent), m_gameView(new GolfView(walls, this))

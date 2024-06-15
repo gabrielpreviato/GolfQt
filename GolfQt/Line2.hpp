@@ -6,6 +6,7 @@ public:
 	Vec2<T> p1, p2;
 
 	Line2(Vec2<T> p1, Vec2<T> p2) : p1(p1), p2(p2) {}
+    Line2() : p1(Vec2<T>()), p2(Vec2<T>()) {}
 
 	Vec2<T> normal() {
 		// (-dy, dx)
