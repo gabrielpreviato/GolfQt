@@ -366,3 +366,5 @@ FodyWeavers.xsd
 **/.qt
 **/.vs
 **/out
+
+**/compile_commands.json
