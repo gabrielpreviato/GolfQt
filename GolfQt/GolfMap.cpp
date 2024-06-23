@@ -4,13 +4,16 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
-GolfMap::GolfMap(std::vector<Physics::Structure> walls)
-    : m_walls(walls)
+GolfMap::GolfMap(std::vector<Physics::Structure> walls, int width, int height)
+    : m_walls(walls), m_width(width), m_height(height)
+{}
+
+GolfMap::GolfMap(const GolfMap& other)
+    : m_walls(other.m_walls), m_width(other.m_width), m_height(other.m_height)
 {}
 
 GolfMap::~GolfMap()
-{
-}
+{}
 
 GolfMap GolfMap::load(std::string path)
 {
@@ -34,5 +37,5 @@ GolfMap GolfMap::load(std::string path)
         });
     }
 
-    return GolfMap{walls};
+    return GolfMap{walls, data["width"], data["height"]};
 }

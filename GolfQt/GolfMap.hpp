@@ -8,12 +8,13 @@ class GolfMap : public QObject
     Q_OBJECT
 
 public:
-    GolfMap(std::vector<Physics::Structure> walls);
+    std::vector<Physics::Structure> m_walls;
+    int m_width, m_height;
+
+    GolfMap(std::vector<Physics::Structure> walls, int width, int height);
+    GolfMap(const GolfMap& other);
     ~GolfMap();
     
     static GolfMap load(std::string path);
-private:
-    std::vector<Physics::Structure> m_walls;
-
 signals:
 };
