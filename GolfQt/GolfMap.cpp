@@ -2,14 +2,15 @@
 #include "GolfMap.hpp"
 #include <qDebug>
 #include <json.hpp>
+#include <qlogging.h>
 using json = nlohmann::json;
 
-GolfMap::GolfMap(std::vector<Physics::Structure> walls, int width, int height)
-    : m_walls(walls), m_width(width), m_height(height)
+GolfMap::GolfMap(std::vector<Physics::Structure> walls, std::map<std::string, std::shared_ptr<QImage>> textures, int width, int height)
+    : m_walls(walls), m_textures(textures), m_width(width), m_height(height)
 {}
 
 GolfMap::GolfMap(const GolfMap& other)
-    : m_walls(other.m_walls), m_width(other.m_width), m_height(other.m_height)
+    : m_walls(other.m_walls), m_width(other.m_width), m_height(other.m_height), m_textures(other.m_textures)
 {}
 
 GolfMap::~GolfMap()
@@ -37,5 +38,10 @@ GolfMap GolfMap::load(std::string path)
         });
     }
 
-    return GolfMap{walls, data["width"], data["height"]};
+    std::map<std::string, std::shared_ptr<QImage>> textures;
+    for (auto& material : data["materials"]) {
+        textures[std::string(material["name"])] = std::make_shared<QImage>(QString::fromStdString(std::string(material["image"])));
+    }
+
+    return GolfMap{walls, textures, data["width"], data["height"]};
 }

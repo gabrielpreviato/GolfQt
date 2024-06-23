@@ -66,6 +66,8 @@ void GolfView::render_objects() {
     }
 
     for (auto& wall : m_map.m_walls) {
+        auto brush = QBrush();
+        brush.setTextureImage(*(m_map.m_textures["wood"]));
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
             QPolygonF(
                 QList<QPointF>{
@@ -73,8 +75,11 @@ void GolfView::render_objects() {
                     QPointF(wall.v3.x, wall.v3.y), QPointF(wall.v4.x, wall.v4.y)
                 }
             ),
-            QPen(), QBrush(wall.bg_color)
+            QPen(), brush
         );
+
+        // auto painter = QPainter();
+        // painter.drawImage(polygon->boundingRect(), *(m_map.m_textures["wood"]));
         m_golf_balls.push_back(polygon);
     }
 }

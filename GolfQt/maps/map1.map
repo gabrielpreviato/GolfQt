@@ -31,5 +31,12 @@
       "material": "wood",
       "points": [[550, 400], [1000, 400], [1000, 500], [550, 500]]
     }
+  ],
+  "materials": [
+    {
+      "name": "wood",
+      "restitution": 0.8,
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/wood_small.jpg"
+    }
   ]
 }
