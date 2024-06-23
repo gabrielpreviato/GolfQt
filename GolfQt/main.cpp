@@ -17,11 +17,11 @@ int main(int argc, char *argv[])
     auto walls = std::vector<Physics::Structure>{ s, wall1, wall2, wall3, wall4 };
 
     QApplication a(argc, argv);
-    GolfQt w{ walls };
 
-    GolfMap map = GolfMap::load("C:/Users/gabri/Source/Repos/GolfQt/GolfQt/maps/map1.map");
+    GolfMap map = GolfMap::load("C:/Users/gabri/GolfQt/GolfQt/maps/map1.map");
+    GolfQt w{ map.m_walls };
 
-    QGolfEngine* engine = new QGolfEngine(argc, argv, walls);
+    QGolfEngine* engine = new QGolfEngine(argc, argv, map);
     QThread* engine_thread = new QThread();
 
     engine->moveToThread(engine_thread);

@@ -6,9 +6,9 @@
 #include <QCursor>
 #include <QMouseEvent>
 
-GolfView::GolfView(std::vector<Physics::Structure> walls, QWidget* parent)
+GolfView::GolfView(const GolfMap& map, QWidget* parent)
     : QGraphicsView{ parent }, m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
-    m_walls(walls)
+    m_map(map)
 {
     resize(400, 400);
     move(100, 100);
@@ -18,7 +18,7 @@ GolfView::GolfView(std::vector<Physics::Structure> walls, QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    m_gameScene->setSceneRect(0, 0, 400, 400);
+    m_gameScene->setSceneRect(0, 0, 1000, 1000);
     setScene(m_gameScene);
 
     connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
@@ -52,17 +52,18 @@ void GolfView::render_objects() {
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
         //qDebug() << "Redered object:" << object.position.x << ", " << object.position.y;
         m_golf_balls.push_back(golf_ball);
+        this->centerOn(m_objects[0].position.x * 100, m_objects[0].position.y * 100);
     }
 
-    QPointF cursor_pos = this->mapFromGlobal(QCursor::pos());
-    if (m_objects.size() > 0) {        
+    QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
+    if (m_objects.size() > 0 && m_objects[0].speed.y == 0 && m_objects[0].speed.x == 0) {
         QGraphicsLineItem* aim_line = m_gameScene->addLine(QLineF(m_objects[0].position.x * 100, m_objects[0].position.y * 100, cursor_pos.x(), cursor_pos.y()));
         aim_line->setAcceptedMouseButtons(Qt::NoButton);
         m_golf_balls.push_back(aim_line);
 
         QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(cursor_pos.x()-4, cursor_pos.y()-4, 8, 8));
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
-        m_golf_balls.push_back(golf_ball);
+        m_golf_balls.push_back(golf_ball); 
     }
 
     for (auto& wall : m_walls) {
@@ -82,7 +83,7 @@ void GolfView::render_objects() {
 void GolfView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton)    // Left button...
     {
-        QPointF cursor_pos = this->mapFromGlobal(QCursor::pos());
+        QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
 
         //qDebug() << "Released: " << cursor_pos.x();
 

@@ -5,6 +5,7 @@
 #include <QPolygonF>
 #include <QList>
 
+#include "GolfMap.hpp"
 #include "GolfScene.hpp"
 
 #include "Physics.hpp"
@@ -17,7 +18,7 @@ class GolfView : public QGraphicsView {
     Q_OBJECT
 
 public:
-    GolfView(std::vector<Physics::Structure> walls, QWidget* parent = nullptr);
+    GolfView(const GolfMap& map, QWidget* parent = nullptr);
     ~GolfView();
     GolfScene* m_gameScene = nullptr;
 
@@ -26,7 +27,7 @@ private:
 
     std::vector<QGraphicsItem*> m_golf_balls{};
     std::vector<Physics::Object> m_objects{};
-    std::vector<Physics::Structure> m_walls;
+    GolfMap m_map;
 
     void render_objects();
 

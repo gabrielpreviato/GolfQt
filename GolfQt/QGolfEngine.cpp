@@ -1,8 +1,9 @@
 #include "QGolfEngine.hpp"
+#include "GolfMap.hpp"
 #include <qDebug>
 
-QGolfEngine::QGolfEngine(int argc, char** argv, std::vector<Physics::Structure> walls)
-    : m_engine_timer(QTimer(this)), m_walls(walls), m_hash(SpatialHashMap(400, 400, 20)) {
+QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
+    : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls) {
     auto o = Physics::Object(1, Vec2d(1, 1), Vec2d(0, 0));
     o.give_impulse(Vec2d(2, 0));
 

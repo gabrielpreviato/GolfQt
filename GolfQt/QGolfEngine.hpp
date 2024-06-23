@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QPoint>
 
+#include "GolfMap.hpp"
 #include "Physics.hpp"
 #include "Structure.hpp"
 #include "SpatialHashMap.hpp"
@@ -11,7 +12,7 @@
 class QGolfEngine : public QObject {
 	Q_OBJECT
 public:
-	QGolfEngine(int argc, char** argv, std::vector<Physics::Structure> walls);
+	QGolfEngine(int argc, char**argv, const GolfMap& map);
 	~QGolfEngine();
 	QTimer m_engine_timer;
 
