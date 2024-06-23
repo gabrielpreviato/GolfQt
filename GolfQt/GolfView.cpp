@@ -5,6 +5,8 @@
 #include <qDebug>
 #include <QCursor>
 #include <QMouseEvent>
+#include <qlogging.h>
+#include <qpoint.h>
 
 GolfView::GolfView(const GolfMap& map, QWidget* parent)
     : QGraphicsView{ parent }, m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
@@ -18,7 +20,7 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    m_gameScene->setSceneRect(0, 0, 1000, 1000);
+    m_gameScene->setSceneRect(0, 0, m_map.m_width + 400, m_map.m_height + 400);
     setScene(m_gameScene);
 
     connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
@@ -35,11 +37,6 @@ void GolfView::receive_objects(std::vector<Physics::Object> objects) {
     std::copy(objects.begin(), objects.end(), std::back_inserter(m_objects));
 }
 
-void GolfView::receive_walls(std::vector<Physics::Structure> walls) {
-    m_walls.clear();
-    std::copy(walls.begin(), walls.end(), std::back_inserter(m_walls));
-}
-
 void GolfView::render_objects() {
     for (auto& golf_ball : m_golf_balls) {
         m_gameScene->removeItem(golf_ball);
@@ -52,10 +49,12 @@ void GolfView::render_objects() {
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
         //qDebug() << "Redered object:" << object.position.x << ", " << object.position.y;
         m_golf_balls.push_back(golf_ball);
-        this->centerOn(m_objects[0].position.x * 100, m_objects[0].position.y * 100);
+        qDebug() << "Golf ball new pos: " << golf_ball->scenePos();
+        const QRectF& golf_rect = golf_ball->rect();
+        this->centerOn({golf_rect.x() + golf_rect.width()/2, golf_rect.y() + golf_rect.height()/2});
     }
 
-    QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
+    QPointF cursor_pos = get_cursor();
     if (m_objects.size() > 0 && m_objects[0].speed.y == 0 && m_objects[0].speed.x == 0) {
         QGraphicsLineItem* aim_line = m_gameScene->addLine(QLineF(m_objects[0].position.x * 100, m_objects[0].position.y * 100, cursor_pos.x(), cursor_pos.y()));
         aim_line->setAcceptedMouseButtons(Qt::NoButton);
@@ -66,7 +65,7 @@ void GolfView::render_objects() {
         m_golf_balls.push_back(golf_ball); 
     }
 
-    for (auto& wall : m_walls) {
+    for (auto& wall : m_map.m_walls) {
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
             QPolygonF(
                 QList<QPointF>{
@@ -83,10 +82,17 @@ void GolfView::render_objects() {
 void GolfView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton)    // Left button...
     {
-        QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
+        QPointF cursor_pos = get_cursor();
 
         //qDebug() << "Released: " << cursor_pos.x();
 
         emit clicked_impulse(cursor_pos);
     }
 }
+
+QPointF GolfView::get_cursor() {
+    QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
+
+    return cursor_pos - QPointF(200, 200);
+}
+

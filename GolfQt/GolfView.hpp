@@ -9,10 +9,6 @@
 #include "GolfScene.hpp"
 
 #include "Physics.hpp"
-#include "Structure.hpp"
-
-#include <algorithm> // for copy() and assign()  
-#include <iterator>
 
 class GolfView : public QGraphicsView {
     Q_OBJECT
@@ -30,13 +26,13 @@ private:
     GolfMap m_map;
 
     void render_objects();
+    QPointF get_cursor();
 
 protected:
     void mouseReleaseEvent(QMouseEvent* event) override;
 
 public slots:
     void receive_objects(std::vector<Physics::Object>);
-    void receive_walls(std::vector<Physics::Structure>);
 
 signals:
     void clicked_impulse(QPointF cursor_pos);

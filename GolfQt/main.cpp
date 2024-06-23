@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     GolfMap map = GolfMap::load("C:/Users/gabri/GolfQt/GolfQt/maps/map1.map");
-    GolfQt w{ map.m_walls };
+    GolfQt w{ map };
 
     QGolfEngine* engine = new QGolfEngine(argc, argv, map);
     QThread* engine_thread = new QThread();
@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     // engine.m_engine_timer.moveToThread(engine_thread);
 
     w.connect(engine, &QGolfEngine::objects, w.m_gameView, &GolfView::receive_objects);
-    w.connect(engine, &QGolfEngine::walls, w.m_gameView, &GolfView::receive_walls);
     w.connect(w.m_gameView, &GolfView::clicked_impulse, engine, &QGolfEngine::player_impulse);
 
     QObject::connect(engine_thread, &QThread::started, engine, &QGolfEngine::run);

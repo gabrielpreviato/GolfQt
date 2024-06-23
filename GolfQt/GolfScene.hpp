@@ -9,5 +9,9 @@ class GolfScene : public QGraphicsScene {
 
 public:
     GolfScene(QObject* parent = nullptr);
+
+    QGraphicsLineItem* addLine(const QLineF& line);
+    QGraphicsPolygonItem* addPolygon(const QPolygonF& polygon, const QPen& pen = QPen(), const QBrush& brush = QBrush());
+    QGraphicsEllipseItem* addEllipse(const QRectF& ellipse, const QPen& pen = QPen(), const QBrush& brush = QBrush());
 };
 

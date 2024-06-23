@@ -65,7 +65,6 @@ void QGolfEngine::run_tick() {
         o.position = future_o.position;
     }
 
-    emit walls(m_walls);
     emit objects(m_objects);
 }
 

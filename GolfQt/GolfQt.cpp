@@ -1,7 +1,7 @@
 #include "GolfQt.hpp"
 
-GolfQt::GolfQt(std::vector<Physics::Structure> walls, QWidget *parent)
-    : QMainWindow(parent), m_gameView(new GolfView(walls, this))
+GolfQt::GolfQt(const GolfMap& map, QWidget *parent)
+    : QMainWindow(parent), m_gameView(new GolfView(map, this))
 {
     ui.setupUi(this);
     this->setCentralWidget(m_gameView);
