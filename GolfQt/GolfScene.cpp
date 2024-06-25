@@ -21,3 +21,10 @@ QGraphicsEllipseItem* GolfScene::addEllipse(const QRectF& ellipse, const QPen& p
 
     return QGraphicsScene::addEllipse(new_ellipse, pen, brush);
 }
+
+QGraphicsPathItem* GolfScene::addPath(const QPainterPath& path, const QPen& pen, const QBrush& brush) {
+    auto new_path = path.translated({200, 200});
+
+    return QGraphicsScene::addPath(new_path, pen, brush);
+}
+
