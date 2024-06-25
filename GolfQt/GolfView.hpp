@@ -23,6 +23,7 @@ private:
 
     std::vector<QGraphicsItem*> m_golf_balls{};
     std::vector<QGraphicsItem*> m_static_walls{};
+    std::vector<QGraphicsItem*> m_static_floors{};
     std::vector<Physics::Object> m_objects{};
     GolfMap m_map;
 

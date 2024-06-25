@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Vec2.hpp"
 #include <QPainterPath>
 
 class GolfFloor {
-private:
+public:
     QPainterPath m_path;
     std::string m_material;
     double m_friction = 1.0;
@@ -29,5 +30,17 @@ public:
 
     void add_floor(const QRect& floor) {
         m_path.addRect(floor);
+    }
+
+    void add_floor(const QPolygonF& floor) {
+        m_path.addPolygon(floor);
+    }
+
+    void add_floor(const std::vector<Vec2d>& points) {
+        m_path.moveTo(points[0].x, points[0].y);
+        for (size_t i = 1; i < points.size(); i++) {
+            m_path.lineTo(points[i].x, points[i].y);
+        }
+        m_path.closeSubpath();
     }
 };

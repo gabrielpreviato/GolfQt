@@ -41,6 +41,7 @@
   "materials": [
     {
       "name": "wood",
+      "friction": 0.9,
       "restitution": 0.8,
       "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/wood_small.jpg"
     },

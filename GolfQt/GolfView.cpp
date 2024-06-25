@@ -35,9 +35,20 @@ GolfView::~GolfView() {
 }
 
 void GolfView::render_static_map() {
+    for (auto& floor : m_map.m_floors) {
+        auto brush = QBrush();
+        brush.setTextureImage(m_map.m_materials[floor.m_material].m_texture);
+        QGraphicsPathItem* path = m_gameScene->addPath(
+            floor.m_path,
+            QPen(), brush
+        );
+
+        m_static_floors.push_back(path);
+    }
+
     for (auto& wall : m_map.m_walls) {
         auto brush = QBrush();
-        brush.setTextureImage(*(m_map.m_textures[wall.m_material]));
+        brush.setTextureImage(m_map.m_materials[wall.m_material].m_texture);
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
             QPolygonF(
                 QList<QPointF>{
