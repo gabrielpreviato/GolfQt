@@ -46,6 +46,7 @@
     },
     {
       "name": "grass",
+      "friction": 1.4,
       "restitution": 0.4,
       "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/grass.jpg"
     }
