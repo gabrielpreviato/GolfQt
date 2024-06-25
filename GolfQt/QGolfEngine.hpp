@@ -18,7 +18,7 @@ public:
 
 private:
 	std::vector<Physics::Object> m_objects;
-	std::vector<Physics::Structure> m_walls;
+	std::vector<GolfWall> m_walls;
 	SpatialHashMap m_hash;
 
 signals:

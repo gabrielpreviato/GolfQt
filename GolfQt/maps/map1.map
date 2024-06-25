@@ -20,7 +20,7 @@
       "points": [[990, 0], [1000, 0], [1000, 1000], [990, 1000]]
     },
     {
-      "material": "wood",
+      "material": "grass",
       "points": [[0, 200], [800, 200], [800, 250], [0, 250]]
     },
     {
@@ -37,6 +37,11 @@
       "name": "wood",
       "restitution": 0.8,
       "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/wood_small.jpg"
+    },
+    {
+      "name": "grass",
+      "restitution": 0.4,
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/grass.jpg"
     }
   ]
 }

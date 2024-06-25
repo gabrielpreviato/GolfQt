@@ -1,11 +1,12 @@
 #include <fstream>
 #include "GolfMap.hpp"
+#include "GolfWall.hpp"
 #include <qDebug>
 #include <json.hpp>
 #include <qlogging.h>
 using json = nlohmann::json;
 
-GolfMap::GolfMap(std::vector<Physics::Structure> walls, std::map<std::string, std::shared_ptr<QImage>> textures, int width, int height)
+GolfMap::GolfMap(std::vector<GolfWall> walls, std::map<std::string, std::shared_ptr<QImage>> textures, int width, int height)
     : m_walls(walls), m_textures(textures), m_width(width), m_height(height)
 {}
 
@@ -18,7 +19,7 @@ GolfMap::~GolfMap()
 
 GolfMap GolfMap::load(std::string path)
 {
-    std::vector<Physics::Structure> walls;
+    std::vector<GolfWall> walls;
     std::ifstream file{path};
 	if (!file.is_open()) {
 		throw std::runtime_error("Could not open file");
@@ -30,17 +31,18 @@ GolfMap GolfMap::load(std::string path)
     for (auto& wall : data["walls"]) {
         std::vector<Vec2d> points;
         for (auto& point : wall["points"]) {
-            qDebug() << point[0].get<double>() << "; " << point[1].get<double>();
+            qDebug() << point[0].get<double>() << "; " << point[1].get<double>() << ";" << std::string(wall["material"]);
             points.push_back(Vec2d{point[0], point[1]});
         }
-        walls.push_back(Physics::Structure{
-            points
+        walls.push_back(GolfWall{
+            points, std::string(wall["material"])
         });
     }
 
     std::map<std::string, std::shared_ptr<QImage>> textures;
     for (auto& material : data["materials"]) {
         textures[std::string(material["name"])] = std::make_shared<QImage>(QString::fromStdString(std::string(material["image"])));
+        qDebug() << "Loaded texture: " << std::string(material["image"]);
     }
 
     return GolfMap{walls, textures, data["width"], data["height"]};
