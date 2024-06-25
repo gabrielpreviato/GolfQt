@@ -20,6 +20,8 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
+    render_static_map();
+
     m_gameScene->setSceneRect(0, 0, m_map.m_width + 400, m_map.m_height + 400);
     setScene(m_gameScene);
 
@@ -30,6 +32,26 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
 GolfView::~GolfView() {
     m_render_timer.stop();
     delete m_gameScene;
+}
+
+void GolfView::render_static_map() {
+    for (auto& wall : m_map.m_walls) {
+        auto brush = QBrush();
+        brush.setTextureImage(*(m_map.m_textures[wall.m_material]));
+        QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
+            QPolygonF(
+                QList<QPointF>{
+                    QPointF(wall.v1.x, wall.v1.y), QPointF(wall.v2.x, wall.v2.y),
+                    QPointF(wall.v3.x, wall.v3.y), QPointF(wall.v4.x, wall.v4.y)
+                }
+            ),
+            QPen(), brush
+        );
+
+        // auto painter = QPainter();
+        // painter.drawImage(polygon->boundingRect(), *(m_map.m_textures["wood"]));
+        m_static_walls.push_back(polygon);
+    }
 }
 
 void GolfView::receive_objects(std::vector<Physics::Object> objects) {
@@ -63,24 +85,6 @@ void GolfView::render_objects() {
         QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(cursor_pos.x()-4, cursor_pos.y()-4, 8, 8));
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
         m_golf_balls.push_back(golf_ball); 
-    }
-
-    for (auto& wall : m_map.m_walls) {
-        auto brush = QBrush();
-        brush.setTextureImage(*(m_map.m_textures["wood"]));
-        QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
-            QPolygonF(
-                QList<QPointF>{
-                    QPointF(wall.v1.x, wall.v1.y), QPointF(wall.v2.x, wall.v2.y),
-                    QPointF(wall.v3.x, wall.v3.y), QPointF(wall.v4.x, wall.v4.y)
-                }
-            ),
-            QPen(), brush
-        );
-
-        // auto painter = QPainter();
-        // painter.drawImage(polygon->boundingRect(), *(m_map.m_textures["wood"]));
-        m_golf_balls.push_back(polygon);
     }
 }
 

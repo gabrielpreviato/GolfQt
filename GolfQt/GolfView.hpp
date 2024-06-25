@@ -22,9 +22,11 @@ private:
     QTimer m_render_timer;
 
     std::vector<QGraphicsItem*> m_golf_balls{};
+    std::vector<QGraphicsItem*> m_static_walls{};
     std::vector<Physics::Object> m_objects{};
     GolfMap m_map;
 
+    void render_static_map();
     void render_objects();
     QPointF get_cursor();
 
