@@ -106,6 +106,12 @@ GolfFloor& SpatialHashMap::get_floor(const Vec2d& position) {
     int i = coord_to_cell(position.y);
     int j = coord_to_cell(position.x);
 
-    return floor_map[i][j][0];
+    for (auto& floor : floor_map[i][j]) {
+        if (floor.m_path.contains(QPointF(position.x, position.y))) {
+            return floor;
+        }
+    }
+
+    throw std::runtime_error("No floor found at position");
 }
 
