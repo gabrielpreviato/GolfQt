@@ -78,7 +78,8 @@ void GolfView::render_objects() {
     m_golf_balls.clear();
 
     for (auto& object : m_objects) {
-        QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(object.position.x*100-3, object.position.y*100-3, 6, 6));
+        qDebug() << "Object radius: " << object.radius;
+        QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(object.position.x*100-object.radius, object.position.y*100-object.radius, object.radius*2, object.radius*2));
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
         //qDebug() << "Redered object:" << object.position.x << ", " << object.position.y;
         m_golf_balls.push_back(golf_ball);

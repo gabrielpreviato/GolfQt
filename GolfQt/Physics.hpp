@@ -12,7 +12,7 @@ namespace Physics {
 	class Object
 	{
 	public:
-		const int radius = 3;
+		double radius = 3;
 		double mass;
 		Vec2d position;
 		Vec2d speed;
@@ -22,8 +22,8 @@ namespace Physics {
 		Object(double mass, Vec2d&& p, Vec2d&& s) : mass(mass), position(std::move(p)), speed(std::move(s)) {};
 
 
-		Object(const Object& o) : mass(o.mass), position(o.position), speed(o.speed) {};
-		Object(Object&& o) noexcept : mass(o.mass), position(o.position), speed(o.speed) {};
+		Object(const Object& o) : radius(o.radius), mass(o.mass), position(o.position), speed(o.speed) {};
+		Object(Object&& o) noexcept : radius(o.radius), mass(o.mass), position(o.position), speed(o.speed) {};
 
 		double kinetic_energy() {
 			return mass * speed.squared();

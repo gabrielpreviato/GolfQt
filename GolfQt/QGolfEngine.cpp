@@ -1,12 +1,14 @@
 #include "QGolfEngine.hpp"
+#include "GolfBall.hpp"
 #include "GolfMap.hpp"
 #include <qDebug>
+#include <qlogging.h>
 
 QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
     : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
     m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20))
 {
-    auto o = Physics::Object(1, Vec2d(1, 1), Vec2d(0, 0));
+    auto o = GolfBall(1, Vec2d(1, 1), Vec2d(0, 0));
     o.give_impulse(Vec2d(2, 0));
 
     m_objects = std::vector<Physics::Object>{o};
@@ -35,7 +37,8 @@ double QGolfEngine::get_floor_friction(const Vec2d& position) {
 
 void QGolfEngine::run_tick() {
     for (auto& o : m_objects) {
-		Physics::Object future_o = o;
+		GolfBall future_o{o};
+        qDebug() << "future_o radius is: " << future_o.radius;
 
         if (std::abs(future_o.speed.x) > Physics::SIGMA || std::abs(future_o.speed.y) > Physics::SIGMA) {
             Vec2d friction = (future_o.speed * (-1.0)).unit() * get_floor_friction(future_o.position * 100);
@@ -74,6 +77,7 @@ void QGolfEngine::run_tick() {
             }
         }
 
+        qDebug() << "o radius is: " << o.radius;
         o.speed = future_o.speed;
         o.position = future_o.position;
     }
@@ -99,5 +103,6 @@ void QGolfEngine::player_impulse(QPointF cursor_pos) {
 void QGolfEngine::stop() {
     m_engine_timer.stop();
     qDebug() << "STOP!";
+    qDebug() << "Ball radius: " << m_objects[0].radius;
     emit finished();
 }
