@@ -18,6 +18,7 @@ namespace Physics {
 	public:
 		Vec2d v1, v2, v3, v4;
 		Line2d e1, e2, e3, e4;
+        std::vector<Line2d> m_edges;
 		QColor bg_color = QColor(0, 0, 0, 127);
 
 		Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4);

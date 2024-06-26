@@ -3,7 +3,9 @@
 #include <qDebug>
 
 QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
-    : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls) {
+    : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
+    m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20))
+{
     auto o = Physics::Object(1, Vec2d(1, 1), Vec2d(0, 0));
     o.give_impulse(Vec2d(2, 0));
 
@@ -15,10 +17,20 @@ QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
         auto n_cells = m_hash.add_structure(wall);
         qDebug() << "Number of cells: " << n_cells;
     }
+
+    for (auto& floor : map.m_floors) {
+        m_floor_hash.add_structure(floor);
+    }
 }
 
 QGolfEngine::~QGolfEngine() {
     qDebug() << "QGolf destructor";
+}
+
+double QGolfEngine::get_floor_friction(const Vec2d& position) {
+    qDebug() << "Getting floor friction";
+    auto& floor = m_floor_hash.get_floor(position);
+    return floor.m_friction;    
 }
 
 void QGolfEngine::run_tick() {
@@ -26,7 +38,8 @@ void QGolfEngine::run_tick() {
 		Physics::Object future_o = o;
 
         if (std::abs(future_o.speed.x) > Physics::SIGMA || std::abs(future_o.speed.y) > Physics::SIGMA) {
-            Vec2d friction = (future_o.speed * (-1.0)).unit();
+            Vec2d friction = (future_o.speed * (-1.0)).unit() * get_floor_friction(future_o.position * 100);
+            qDebug() << "friction is: " << friction.x << ", " << friction.y;
             future_o.tick(friction);
             qDebug() << "future_o speed is: " << future_o.speed.x << ", " << future_o.speed.y;
             qDebug() << "future_o friction is: " << friction.x << ", " << friction.y;

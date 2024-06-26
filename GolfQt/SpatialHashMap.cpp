@@ -10,7 +10,10 @@ SpatialHashMap::SpatialHashMap(int x_size, int y_size, int cell_size)
 
     for (auto i = 0; i < n_rows; i++) {
         auto map_row = std::vector<std::vector<Physics::Structure*>>(n_cols);
+        auto floor_map_row = std::vector<std::vector<GolfFloor>>(n_cols);
+
         map.push_back(map_row);
+        floor_map.push_back(floor_map_row);
     }
 }
 
@@ -52,6 +55,32 @@ int SpatialHashMap::add_structure(Physics::Structure& structure) {
     return n_mappings;
 }
 
+int SpatialHashMap::add_structure(const GolfFloor& floor) {
+    auto rect = floor.m_path.boundingRect();
+    Physics::Structure rect_structure = Physics::Structure( 
+        Vec2d(rect.topLeft().x(), rect.topLeft().y()), 
+        Vec2d(rect.topRight().x(), rect.topRight().y()), 
+        Vec2d(rect.bottomRight().x(), rect.bottomRight().y()), 
+        Vec2d(rect.bottomLeft().x(), rect.bottomLeft().y())
+    );
+
+    auto [min_x, min_y, max_x, max_y] = structure_bbox(rect_structure);
+
+    qDebug() << min_x << "; " << min_y << "; " << max_x << "; " << max_y;
+    qDebug() << coord_to_cell(min_y) << "; " << coord_to_cell(max_y, true) << "; " << coord_to_cell(min_x) << "; " << coord_to_cell(max_x, true);
+
+    unsigned int n_mappings = 0;
+    for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {
+        for (auto j = coord_to_cell(min_x); j <= coord_to_cell(max_x, true); j++) {
+            qDebug() << "Adding floor to cell: " << i << ", " << j;
+            floor_map[i][j].push_back(floor);
+            n_mappings++;
+        }
+    }
+
+    return n_mappings;
+}
+
 std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Structure& object) {
     auto [min_x, min_y, max_x, max_y] = structure_bbox(object);
 
@@ -72,3 +101,11 @@ std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Object
 
     return broad_collision(ball_structure);
 }
+
+GolfFloor& SpatialHashMap::get_floor(const Vec2d& position) {
+    int i = coord_to_cell(position.y);
+    int j = coord_to_cell(position.x);
+
+    return floor_map[i][j][0];
+}
+

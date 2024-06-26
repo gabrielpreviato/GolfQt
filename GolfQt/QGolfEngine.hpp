@@ -20,6 +20,9 @@ private:
 	std::vector<Physics::Object> m_objects;
 	std::vector<GolfWall> m_walls;
 	SpatialHashMap m_hash;
+    SpatialHashMap m_floor_hash;
+
+    double get_floor_friction(const Vec2d& position);
 
 signals:
 	void objects(std::vector<Physics::Object>);

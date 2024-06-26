@@ -35,7 +35,11 @@
   "floors": [
     {
       "material": "grass",
-      "points": [[0, 0], [1000, 0], [1000, 1000], [0, 1000]]
+      "points": [[0, 0], [600, 0], [600, 1000], [0, 1000]]
+    },
+    {
+      "material": "sand",
+      "points": [[600, 0], [1000, 0], [1000, 1000], [600, 1000]]
     }
   ],
   "materials": [
@@ -50,6 +54,12 @@
       "friction": 1.4,
       "restitution": 0.4,
       "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/grass.jpg"
+    },
+    {
+      "name": "sand",
+      "friction": 2.8,
+      "restitution": 0.2,
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/sand.jpg"
     }
   ]
 }
