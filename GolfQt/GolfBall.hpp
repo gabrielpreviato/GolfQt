@@ -3,6 +3,8 @@
 
 class GolfBall : public Physics::Object {
 public:
+    bool m_is_moving = false;
+
     GolfBall(double mass, Vec2d position, Vec2d velocity) : Physics::Object(mass, position, velocity) {
         radius = 6;
     }

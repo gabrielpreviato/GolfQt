@@ -46,9 +46,13 @@ void QGolfEngine::run_tick() {
             future_o.tick(friction);
             qDebug() << "future_o speed is: " << future_o.speed.x << ", " << future_o.speed.y;
             qDebug() << "future_o friction is: " << friction.x << ", " << friction.y;
+            future_o.m_is_moving = true;
+            emit is_moving(true);
         }
         else {
             future_o.tick(Vec2d(0, 0));
+            future_o.m_is_moving = false;
+            emit is_moving(false);
         }
         //qDebug() << "o position x is: " << o.position.x ;
         //qDebug() << "o speed x is: " << o.speed.x;

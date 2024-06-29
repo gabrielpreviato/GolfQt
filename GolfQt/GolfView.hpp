@@ -5,6 +5,7 @@
 #include <QPolygonF>
 #include <QList>
 
+#include "GolfCamera.hpp"
 #include "GolfMap.hpp"
 #include "GolfScene.hpp"
 
@@ -26,6 +27,9 @@ private:
     std::vector<QGraphicsItem*> m_static_floors{};
     std::vector<Physics::Object> m_objects{};
     GolfMap m_map;
+    GolfCamera m_camera;
+
+    bool m_is_moving = false;
 
     void render_static_map();
     void render_objects();
@@ -33,9 +37,11 @@ private:
 
 protected:
     void mouseReleaseEvent(QMouseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 public slots:
     void receive_objects(std::vector<Physics::Object>);
+    void receive_is_moving(bool is_moving);
 
 signals:
     void clicked_impulse(QPointF cursor_pos);

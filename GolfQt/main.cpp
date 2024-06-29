@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 
     w.connect(engine, &QGolfEngine::objects, w.m_gameView, &GolfView::receive_objects);
     w.connect(w.m_gameView, &GolfView::clicked_impulse, engine, &QGolfEngine::player_impulse);
+    w.connect(engine, &QGolfEngine::is_moving, w.m_gameView, &GolfView::receive_is_moving);
 
     QObject::connect(engine_thread, &QThread::started, engine, &QGolfEngine::run);
     a.connect(&a, &QApplication::aboutToQuit, engine, &QGolfEngine::stop);

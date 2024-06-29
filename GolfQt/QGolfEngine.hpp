@@ -26,6 +26,7 @@ private:
 
 signals:
 	void objects(std::vector<Physics::Object>);
+    void is_moving(bool);
 	void walls(std::vector<Physics::Structure>);
 	void finished();
 
