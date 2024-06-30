@@ -139,7 +139,11 @@ public:
     }
 
     Vec2<T> unit() const {
-        return Vec2<T>(x, y) / length();
+        double len = length();
+        if (len == 0) {
+            return Vec2<T>(0, 0);
+        }
+        return Vec2<T>(x, y) / len;
     }
 
     Vec2<T> ortho() const {
