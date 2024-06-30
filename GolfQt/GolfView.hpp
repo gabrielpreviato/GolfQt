@@ -21,6 +21,7 @@ public:
 
 private:
     QTimer m_render_timer;
+    double m_border = 200;
 
     std::vector<QGraphicsItem*> m_golf_balls{};
     std::vector<QGraphicsItem*> m_static_walls{};
@@ -38,6 +39,7 @@ private:
 protected:
     void mouseReleaseEvent(QMouseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
 
 public slots:
     void receive_objects(std::vector<Physics::Object>);

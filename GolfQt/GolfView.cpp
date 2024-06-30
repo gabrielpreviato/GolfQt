@@ -7,10 +7,11 @@
 #include <QMouseEvent>
 #include <qlogging.h>
 #include <qpoint.h>
+#include <qwidget.h>
 
 GolfView::GolfView(const GolfMap& map, QWidget* parent)
     : QGraphicsView{ parent }, m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
-    m_map(map)
+    m_map(map), m_camera(map, m_border)
 {
     resize(400, 400);
     move(100, 100);
@@ -27,6 +28,9 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
 
     connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
     m_render_timer.start(1000*Physics::TICK_RATE);
+
+    setFocus();
+    grabKeyboard();
 }
 
 GolfView::~GolfView() {
@@ -107,6 +111,11 @@ void GolfView::render_objects() {
         }
     }
 
+    if (m_camera.m_mode == CameraMode::CAMERA_MODE_FREE) {
+        qDebug() << "Camera mode is free";
+        m_camera.move();
+        qDebug() << "Camera position: " << m_camera.m_position.x << ", " << m_camera.m_position.y;
+    }
     this->centerOn(m_camera.m_position.x, m_camera.m_position.y);
 }
 
@@ -124,6 +133,11 @@ void GolfView::mouseReleaseEvent(QMouseEvent* event) {
 
 void GolfView::keyPressEvent(QKeyEvent* event)
 {
+    if (event->isAutoRepeat()) {
+        event->ignore();
+        return;
+    }
+
     auto key = event->key();
     switch (key) {
     case Qt::Key_C:
@@ -156,12 +170,54 @@ void GolfView::keyPressEvent(QKeyEvent* event)
         qDebug() << "D key pressed";
         qDebug() << "is_moving: " << m_is_moving;
         break;
+    default:
+        QWidget::keyPressEvent(event);
+        break;
+    }
+}
+
+void GolfView::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->isAutoRepeat()) {
+        event->ignore();
+        return;
+    }
+
+    auto key = event->key();
+    switch (key) {
+    case Qt::Key_W:
+        // do your stuff here
+        m_camera.stop_up();
+        qDebug() << "W key released";
+        qDebug() << "is_moving: " << m_is_moving;
+        break;
+    case Qt::Key_S:
+        // do your stuff here
+        m_camera.stop_down();
+        qDebug() << "S key released";
+        qDebug() << "is_moving: " << m_is_moving;
+        break;
+    case Qt::Key_A:
+        // do your stuff here
+        m_camera.stop_left();
+        qDebug() << "A key released";
+        qDebug() << "is_moving: " << m_is_moving;
+        break;
+    case Qt::Key_D:
+        // do your stuff here
+        m_camera.stop_right();
+        qDebug() << "D key released";
+        qDebug() << "is_moving: " << m_is_moving;
+        break;
+    default:
+        QWidget::keyReleaseEvent(event);
+        break;
     }
 }
 
 QPointF GolfView::get_cursor() {
     QPointF cursor_pos = this->mapToScene(this->mapFromGlobal(QCursor::pos()));
 
-    return cursor_pos - QPointF(200, 200);
+    return cursor_pos - QPointF(m_border, m_border);
 }
 
