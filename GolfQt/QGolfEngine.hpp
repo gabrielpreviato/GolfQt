@@ -21,6 +21,7 @@ private:
 	std::vector<GolfWall> m_walls;
 	SpatialHashMap m_hash;
     SpatialHashMap m_floor_hash;
+    GolfMap m_map;
 
     double get_floor_friction(const Vec2d& position);
 

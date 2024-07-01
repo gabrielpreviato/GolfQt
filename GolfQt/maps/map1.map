@@ -3,6 +3,7 @@
   "width": 1000,
   "height": 1000,
   "starting_position": [100, 100],
+  "finish_position": [900, 900],
   "walls": [
     {
       "material": "wood",
@@ -61,6 +62,12 @@
       "friction": 2.8,
       "restitution": 0.2,
       "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/sand.jpg"
+    },
+    {
+        "name": "black",
+        "friction": 0.0,
+        "restitution": 0.0,
+        "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/black.jpg"
     }
   ]
 }

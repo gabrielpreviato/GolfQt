@@ -36,6 +36,10 @@ public:
         m_path.addPolygon(floor);
     }
 
+    void add_floor(const QPointF& center, int radius) {
+        m_path.addEllipse(center, radius, radius);
+    }
+
     void add_floor(const std::vector<Vec2d>& points) {
         m_path.moveTo(points[0].x, points[0].y);
         for (size_t i = 1; i < points.size(); i++) {

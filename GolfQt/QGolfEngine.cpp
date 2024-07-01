@@ -6,7 +6,7 @@
 
 QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
     : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
-    m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20))
+    m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_map(map)
 {
     auto o = GolfBall(1, map.m_start / 100, Vec2d(0, 0));
     m_objects = std::vector<Physics::Object>{o};
@@ -82,6 +82,12 @@ void QGolfEngine::run_tick() {
         qDebug() << "o radius is: " << o.radius;
         o.speed = future_o.speed;
         o.position = future_o.position;
+
+        if ((m_map.m_end.x/100 - 0.1 <= future_o.position.x && future_o.position.x <= m_map.m_end.x/100 + 0.1) && 
+            (m_map.m_end.y/100 - 0.1 <= future_o.position.y && future_o.position.y <= m_map.m_end.y/100 + 0.1) && 
+            !future_o.m_is_moving) {
+            stop();
+        }
     }
 
     emit objects(m_objects);
