@@ -2,6 +2,7 @@
   "name": "Map 1",
   "width": 1000,
   "height": 1000,
+  "starting_position": [100, 100],
   "walls": [
     {
       "material": "wood",

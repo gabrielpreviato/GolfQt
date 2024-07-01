@@ -7,12 +7,12 @@
 #include <qlogging.h>
 using json = nlohmann::json;
 
-GolfMap::GolfMap(std::vector<GolfWall> walls, std::vector<GolfFloor> floors, std::map<std::string, Material> materials, int width, int height)
-    : m_walls(walls), m_floors(floors), m_materials(materials), m_width(width), m_height(height)
+GolfMap::GolfMap(std::vector<GolfWall> walls, std::vector<GolfFloor> floors, std::map<std::string, Material> materials, Vec2d start, int width, int height)
+    : m_walls(walls), m_floors(floors), m_materials(materials), m_width(width), m_height(height), m_start(start)
 {}
 
 GolfMap::GolfMap(const GolfMap& other)
-    : m_walls(other.m_walls), m_floors(other.m_floors), m_width(other.m_width), m_height(other.m_height), m_materials(other.m_materials)
+    : m_walls(other.m_walls), m_floors(other.m_floors), m_width(other.m_width), m_height(other.m_height), m_materials(other.m_materials), m_start(other.m_start)
 {}
 
 GolfMap::~GolfMap()
@@ -58,5 +58,5 @@ GolfMap GolfMap::load(std::string path)
         floors.push_back(golf_floor);
     }
 
-    return GolfMap{walls, floors, materials, data["width"], data["height"]};
+    return GolfMap{walls, floors, materials, Vec2d{data["starting_position"][0], data["starting_position"][1]}, data["width"], data["height"]};
 }

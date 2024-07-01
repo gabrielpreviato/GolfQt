@@ -8,9 +8,7 @@ QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
     : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
     m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20))
 {
-    auto o = GolfBall(1, Vec2d(1, 1), Vec2d(0, 0));
-    o.give_impulse(Vec2d(2, 0));
-
+    auto o = GolfBall(1, map.m_start / 100, Vec2d(0, 0));
     m_objects = std::vector<Physics::Object>{o};
 
     connect(&m_engine_timer, &QTimer::timeout, this, &QGolfEngine::run_tick);
