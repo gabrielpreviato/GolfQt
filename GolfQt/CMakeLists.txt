@@ -41,6 +41,8 @@ add_executable(${PROJECT_NAME}
     QGolfEngine.cpp QGolfEngine.hpp
     SpatialHashMap.cpp SpatialHashMap.hpp
     GolfMap.cpp GolfMap.hpp
+    GolfPlayer.cpp GolfPlayer.hpp
+    GolfCamera.hpp
     json.hpp
     # Add .h files here if you want them to appear in IDE project structure
 )

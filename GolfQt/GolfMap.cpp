@@ -43,7 +43,7 @@ GolfMap GolfMap::load(std::string path)
             points.push_back(Vec2d{point[0], point[1]});
         }
         walls.push_back(GolfWall{
-            points, std::string(wall["material"])
+            points, std::string(wall["material"]), materials[std::string(wall["material"])].m_restitution
         });
     }
 
@@ -52,7 +52,7 @@ GolfMap GolfMap::load(std::string path)
         std::vector<Vec2d> points;
         auto golf_floor = GolfFloor{materials[std::string(floor["material"])].m_friction, std::string(floor["material"])};
 
-        golf_floor.m_path.moveTo(floor["points"][0]["begin"][0], floor["points"][0]["begin"][0]);
+        golf_floor.m_path.moveTo(floor["points"][0]["begin"][0], floor["points"][0]["begin"][1]);
         for (auto& point : floor["points"]) {    
             auto path_type = std::string(point["type"]);
             if (path_type == "line") {
