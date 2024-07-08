@@ -50,14 +50,29 @@ GolfMap GolfMap::load(std::string path)
     std::vector<GolfFloor> floors;
     for (auto& floor : data["floors"]) {
         std::vector<Vec2d> points;
-        for (auto& point : floor["points"]) {
-            qDebug() << point[0].get<double>() << "; " << point[1].get<double>() << ";" << std::string(floor["material"]);
-            points.push_back(Vec2d{point[0], point[1]});
-        }
         auto golf_floor = GolfFloor{materials[std::string(floor["material"])].m_friction, std::string(floor["material"])};
-        golf_floor.add_floor(points);
+
+        golf_floor.m_path.moveTo(floor["points"][0]["begin"][0], floor["points"][0]["begin"][0]);
+        for (auto& point : floor["points"]) {    
+            auto path_type = std::string(point["type"]);
+            if (path_type == "line") {
+                golf_floor.add_line({point["begin"][0], point["begin"][1]}, {point["end"][0], point["end"][1]});
+            }
+            else if (path_type == "quad") {
+                golf_floor.add_quad({point["begin"][0], point["begin"][1]}, {point["end"][0], point["end"][1]},
+                        {point["control"][0][0], point["control"][0][1]});
+            }
+            else if (path_type == "cubic") {
+                golf_floor.add_cubic({point["begin"][0], point["begin"][1]}, {point["end"][0], point["end"][1]},
+                        {point["control"][0][0], point["control"][0][1]}, {point["control"][0][0], point["control"][0][1]});
+            }
+            // qDebug() << point[0].get<double>() << "; " << point[1].get<double>() << ";" << std::string(floor["material"]);
+        }
+        golf_floor.m_path.closeSubpath();
+
         floors.push_back(golf_floor);
     }
+    qDebug() << floors.size();
 
     auto hole_floor = GolfFloor{14, "black"};
     hole_floor.add_floor(QPointF{data["finish_position"][0], data["finish_position"][1]}, 10);

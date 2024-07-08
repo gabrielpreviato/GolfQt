@@ -47,4 +47,22 @@ public:
         }
         m_path.closeSubpath();
     }
+
+    void add_line(const Vec2d& start, const Vec2d& end) {
+        //m_path.moveTo(start.x, start.y);
+        m_path.lineTo(end.x, end.y);
+        //m_path.closeSubpath();
+    }
+
+    void add_cubic(const Vec2d& start, const Vec2d& end, const Vec2d& c1, const Vec2d& c2) {
+        //m_path.moveTo(start.x, start.y);
+        m_path.cubicTo(c1.x, c1.y, c2.x, c2.y, end.x, end.y);
+        //m_path.closeSubpath();
+    }
+
+    void add_quad(const Vec2d& start, const Vec2d& end, const Vec2d& c1) {
+        //m_path.moveTo(start.x, start.y);
+        m_path.quadTo(c1.x, c1.y, end.x, end.y);
+        //m_path.closeSubpath();
+    }
 };

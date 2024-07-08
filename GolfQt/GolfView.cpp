@@ -49,6 +49,7 @@ void GolfView::render_static_map() {
 
         m_static_floors.push_back(path);
     }
+    qDebug() << m_static_floors.size();
 
     for (auto& wall : m_map.m_walls) {
         auto brush = QBrush();

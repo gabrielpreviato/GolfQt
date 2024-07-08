@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    GolfMap map = GolfMap::load("C:/Users/gabri/GolfQt/GolfQt/maps/map1.map");
+    GolfMap map = GolfMap::load("C:/Users/prg7fe/tools/GolfQt/GolfQt/maps/map1.map");
     GolfQt w{ map };
 
     QGolfEngine* engine = new QGolfEngine(argc, argv, map);

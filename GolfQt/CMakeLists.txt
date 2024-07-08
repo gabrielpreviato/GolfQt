@@ -14,6 +14,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_GENERATOR "Ninja")
+set(CMAKE_BUILD_TYPE "Debug")
 
 # It's better to not hard-code the CMAKE_PREFIX_PATH in the CMakeLists.txt.
 # Instead, pass it as a command-line argument to cmake or set it as an environment variable.
