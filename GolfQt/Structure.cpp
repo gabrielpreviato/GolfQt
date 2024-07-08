@@ -1,13 +1,17 @@
 #include "Structure.hpp"
 
-Physics::Structure::Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4)
+Physics::Structure::Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4, double restitution)
     : v1(v1), v2(v2), v3(v3), v4(v4), 
-    e1(Line2d(v1, v2)), e2(Line2d(v2, v3)), e3(Line2d(v3, v4)), e4(Line2d(v4, v1))
+    e1(Line2d(v1, v2)), e2(Line2d(v2, v3)), e3(Line2d(v3, v4)), e4(Line2d(v4, v1)), m_restitution(restitution)
 {
     m_edges = {e1, e2, e3, e4};
 }
+Physics::Structure::Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4) 
+    : Physics::Structure(v1, v2, v3, v4, 0)
+{}
 
-Physics::Structure::Structure(std::vector<Vec2d> points)
+Physics::Structure::Structure(std::vector<Vec2d> points, double restitution)
+    : m_restitution(restitution)
 {
     if (points.size() != 4) {
         throw std::invalid_argument("Structure must have 4 points");
@@ -23,3 +27,8 @@ Physics::Structure::Structure(std::vector<Vec2d> points)
 
     m_edges = {e1, e2, e3, e4};
 }
+
+Physics::Structure::Structure(std::vector<Vec2d> points)
+    : Physics::Structure(points, 0)
+{}
+
