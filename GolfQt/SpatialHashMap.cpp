@@ -1,4 +1,5 @@
 #include "SpatialHashMap.hpp"
+#include <cmath>
 #include <unordered_set>
 #include <qDebug>
 #include <algorithm>
@@ -106,12 +107,18 @@ GolfFloor& SpatialHashMap::get_floor(const Vec2d& position) {
     int i = coord_to_cell(position.y);
     int j = coord_to_cell(position.x);
 
+    GolfFloor* last_floor = nullptr;
     for (auto& floor : floor_map[i][j]) {
         if (floor.m_path.contains(QPointF(position.x, position.y))) {
-            return floor;
+            last_floor = &floor;
         }
     }
 
-    throw std::runtime_error("No floor found at position");
+    if (last_floor) {
+        return *last_floor;
+    }
+    else {
+        throw std::runtime_error("No floor found at position");
+    }
 }
 

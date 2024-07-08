@@ -4,6 +4,7 @@
 #include "ui_GolfQt.h"
 
 #include "GolfView.hpp"
+#include "GolfPlayer.hpp"
 #include <QMouseEvent>
 
 class GolfQt : public QMainWindow
@@ -15,6 +16,7 @@ public:
     ~GolfQt();
 
     GolfView* m_gameView = nullptr;
+    GolfPlayer m_player;
 
 private:
     Ui::GolfQtClass ui;

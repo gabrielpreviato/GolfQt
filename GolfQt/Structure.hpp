@@ -19,10 +19,13 @@ namespace Physics {
 		Vec2d v1, v2, v3, v4;
 		Line2d e1, e2, e3, e4;
         std::vector<Line2d> m_edges;
+        double m_restitution = 0;
 		QColor bg_color = QColor(0, 0, 0, 127);
 
 		Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4);
+		Structure(Vec2d v1, Vec2d v2, Vec2d v3, Vec2d v4, double restitution);
         Structure(std::vector<Vec2d> points);
+        Structure(std::vector<Vec2d> points, double restitution);
 
 		void set_color(QColor new_color) {
 			bg_color = new_color;

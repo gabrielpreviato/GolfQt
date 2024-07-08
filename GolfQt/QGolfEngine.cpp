@@ -57,7 +57,6 @@ void QGolfEngine::run_tick() {
         auto possible_collisions = m_hash.broad_collision(future_o);
         qDebug() << "Possbile collision objects: " << possible_collisions.size();
         for (auto& wall : possible_collisions) {
-            wall->set_color(QColor(255, 0, 0, 127));
             auto bbox = future_o.bounding_box();
 
             if (bbox.projections_overlap(*wall)) {
@@ -70,11 +69,13 @@ void QGolfEngine::run_tick() {
 
 				qDebug() << "Wall: " << wall->v1.x << ", " << wall->v1.y << "; " << wall->v2.x << ", " << wall->v2.y << "; " << wall->v3.x << ", " << wall->v3.y << "; " << wall->v4.x << ", " << wall->v4.y;
 				qDebug() << "Ball: " << bbox.v1.x << ", " << bbox.v1.y << "; " << bbox.v2.x << ", " << bbox.v2.y << "; " << bbox.v3.x << ", " << bbox.v3.y << "; " << bbox.v4.x << ", " << bbox.v4.y;
-                wall->set_color(QColor(255, 255, 0, 127));
 				
                 Vec2d collisionNormal = wall->get_normal(edge); // You need to implement get_normal() based on your wall structure
 
-                future_o.speed = future_o.speed.reflect(collisionNormal);
+                auto new_speed = future_o.speed.reflect(collisionNormal);
+                new_speed = new_speed * (future_o.speed.length() / new_speed.length());
+
+                future_o.speed = new_speed * wall->m_restitution;
                 future_o.position -= collisionNormal * 0.01; // Adjust the multiplier as needed
             }
         }
