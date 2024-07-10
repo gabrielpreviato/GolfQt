@@ -15,7 +15,7 @@ public:
     GolfQt(const GolfMap& map, QWidget *parent = nullptr);
     ~GolfQt();
 
-    GolfView* m_gameView = nullptr;
+    GolfView m_gameView;
     GolfPlayer m_player;
 
 private:
