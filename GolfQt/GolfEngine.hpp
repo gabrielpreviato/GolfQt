@@ -9,11 +9,11 @@
 #include "Structure.hpp"
 #include "SpatialHashMap.hpp"
 
-class QGolfEngine : public QObject {
+class GolfEngine : public QObject {
 	Q_OBJECT
 public:
-	QGolfEngine(int argc, char**argv, const GolfMap& map);
-	~QGolfEngine();
+	GolfEngine(const GolfMap& map);
+	~GolfEngine();
 	QTimer m_engine_timer;
 
 private:

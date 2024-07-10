@@ -38,7 +38,7 @@ add_executable(${PROJECT_NAME}
     Structure.cpp Structure.hpp
     Physics.cpp Physics.hpp Physics-Constants.hpp
     Line2.cpp Line2.hpp Vec2.hpp utilities.hpp
-    QGolfEngine.cpp QGolfEngine.hpp
+    GolfEngine.cpp GolfEngine.hpp
     SpatialHashMap.cpp SpatialHashMap.hpp
     GolfMap.cpp GolfMap.hpp
     GolfPlayer.cpp GolfPlayer.hpp

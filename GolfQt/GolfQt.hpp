@@ -5,7 +5,9 @@
 
 #include "GolfView.hpp"
 #include "GolfPlayer.hpp"
+#include "GolfEngine.hpp"
 #include <QMouseEvent>
+#include <QThread>
 
 class GolfQt : public QMainWindow
 {
@@ -17,6 +19,9 @@ public:
 
     GolfView m_gameView;
     GolfPlayer m_player;
+    
+    GolfEngine* m_engine = nullptr;
+    QThread* m_engine_thread = nullptr;
 
 private:
     Ui::GolfQtClass ui;

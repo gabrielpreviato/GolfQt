@@ -1,17 +1,17 @@
-#include "QGolfEngine.hpp"
+#include "GolfEngine.hpp"
 #include "GolfBall.hpp"
 #include "GolfMap.hpp"
 #include <qDebug>
 #include <qlogging.h>
 
-QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
+GolfEngine::GolfEngine(const GolfMap& map)
     : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
     m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_map(map)
 {
     auto o = GolfBall(1, map.m_start / 100, Vec2d(0, 0));
     m_objects = std::vector<Physics::Object>{o};
 
-    connect(&m_engine_timer, &QTimer::timeout, this, &QGolfEngine::run_tick);
+    connect(&m_engine_timer, &QTimer::timeout, this, &GolfEngine::run_tick);
     
     for (auto& wall : m_walls) {
         auto n_cells = m_hash.add_structure(wall);
@@ -23,17 +23,17 @@ QGolfEngine::QGolfEngine(int argc, char** argv, const GolfMap& map)
     }
 }
 
-QGolfEngine::~QGolfEngine() {
+GolfEngine::~GolfEngine() {
     qDebug() << "QGolf destructor";
 }
 
-double QGolfEngine::get_floor_friction(const Vec2d& position) {
+double GolfEngine::get_floor_friction(const Vec2d& position) {
     qDebug() << "Getting floor friction";
     auto& floor = m_floor_hash.get_floor(position);
     return floor.m_friction;    
 }
 
-void QGolfEngine::run_tick() {
+void GolfEngine::run_tick() {
     for (auto& o : m_objects) {
 		GolfBall future_o{o};
         qDebug() << "future_o radius is: " << future_o.radius;
@@ -94,13 +94,13 @@ void QGolfEngine::run_tick() {
     emit objects(m_objects);
 }
 
-void QGolfEngine::run() {
+void GolfEngine::run() {
     qDebug() << "Hello World!";
     qDebug() << "Gravity is: " << Physics::GRAVITY;
     m_engine_timer.start(1000*Physics::TICK_RATE);
 }
 
-void QGolfEngine::player_impulse(QPointF cursor_pos) {
+void GolfEngine::player_impulse(QPointF cursor_pos) {
     auto& ball = m_objects[0];
 
     QPointF imp_vector_cm = QPointF(ball.position.x * 100, ball.position.y * 100) - cursor_pos;
@@ -109,9 +109,8 @@ void QGolfEngine::player_impulse(QPointF cursor_pos) {
     ball.give_impulse(Vec2d(imp_vector_m.x(), imp_vector_m.y()));
 }
 
-void QGolfEngine::stop() {
+void GolfEngine::stop() {
     m_engine_timer.stop();
     qDebug() << "STOP!";
-    qDebug() << "Ball radius: " << m_objects[0].radius;
     emit finished();
 }
