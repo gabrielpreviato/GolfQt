@@ -12,16 +12,18 @@
 class GolfEngine : public QObject {
 	Q_OBJECT
 public:
-	GolfEngine(const GolfMap& map);
+	GolfEngine();
 	~GolfEngine();
-	QTimer m_engine_timer;
+    
+    void load_map(const GolfMap& map);
 
 private:
 	std::vector<Physics::Object> m_objects;
-	std::vector<GolfWall> m_walls;
 	SpatialHashMap m_hash;
     SpatialHashMap m_floor_hash;
     GolfMap m_map;
+	
+    QTimer m_engine_timer;
 
     double get_floor_friction(const Vec2d& position);
 

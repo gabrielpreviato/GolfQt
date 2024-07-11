@@ -22,6 +22,7 @@ public:
     double m_map_height;
     double m_map_border;
 
+    GolfCamera() = default;
     GolfCamera(const GolfMap& map, double border) :
         m_map_width(map.m_width), m_map_height(map.m_height), m_map_border(border)
     {}

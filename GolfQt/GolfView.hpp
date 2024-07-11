@@ -15,9 +15,11 @@ class GolfView : public QGraphicsView {
     Q_OBJECT
 
 public:
-    GolfView(const GolfMap& map, QWidget* parent = nullptr);
+    GolfView(QWidget* parent = nullptr);
     ~GolfView();
     GolfScene* m_gameScene = nullptr;
+
+    void load_map(const GolfMap& map);
 
 private:
     QTimer m_render_timer;

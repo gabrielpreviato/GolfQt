@@ -18,6 +18,20 @@ GolfMap::GolfMap(const GolfMap& other)
 
 GolfMap::~GolfMap()
 {}
+    
+GolfMap& GolfMap::operator=(const GolfMap& map) {
+        m_walls = map.m_walls;
+        m_floors = map.m_floors;
+        m_materials = map.m_materials;
+        m_width = map.m_width;
+        m_height = map.m_height;
+        m_start = map.m_start;
+        m_end = map.m_end;
+
+        //qDebug() << "Called assignment" ;
+
+        return *this;
+    }
 
 GolfMap GolfMap::load(std::string path)
 {

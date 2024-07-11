@@ -5,13 +5,12 @@
 #include <qDebug>
 #include <QCursor>
 #include <QMouseEvent>
-#include <qlogging.h>
+#include <QDebug>
 #include <qpoint.h>
 #include <qwidget.h>
 
-GolfView::GolfView(const GolfMap& map, QWidget* parent)
-    : QGraphicsView{ parent }, m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
-    m_map(map), m_camera(map, m_border)
+GolfView::GolfView(QWidget* parent)
+    : QGraphicsView{ parent }, m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this))
 {
     resize(400, 400);
     move(100, 100);
@@ -21,14 +20,6 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    render_static_map();
-
-    m_gameScene->setSceneRect(0, 0, m_map.m_width + 400, m_map.m_height + 400);
-    setScene(m_gameScene);
-
-    connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
-    m_render_timer.start(1000*Physics::TICK_RATE);
-
     setFocus();
     grabKeyboard();
 }
@@ -36,6 +27,24 @@ GolfView::GolfView(const GolfMap& map, QWidget* parent)
 GolfView::~GolfView() {
     m_render_timer.stop();
     delete m_gameScene;
+}
+
+void GolfView::load_map(const GolfMap& map)
+{
+    if (m_render_timer.isActive()) {
+        m_render_timer.stop();
+    }
+
+    m_map = map;
+    m_camera = GolfCamera(m_map, m_border);
+    
+    render_static_map();
+
+    m_gameScene->setSceneRect(0, 0, m_map.m_width + 400, m_map.m_height + 400);
+    setScene(m_gameScene);
+
+    connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
+    m_render_timer.start(1000*Physics::TICK_RATE);
 }
 
 void GolfView::render_static_map() {

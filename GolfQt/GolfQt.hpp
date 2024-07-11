@@ -14,8 +14,10 @@ class GolfQt : public QMainWindow
     Q_OBJECT
 
 public:
-    GolfQt(const GolfMap& map, QWidget *parent = nullptr);
+    GolfQt(QWidget *parent = nullptr);
     ~GolfQt();
+
+    void load_map(const GolfMap& map);
 
     GolfView m_gameView;
     GolfPlayer m_player;

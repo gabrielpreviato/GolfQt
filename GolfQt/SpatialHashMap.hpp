@@ -20,6 +20,8 @@ private:
 
 public:
 	SpatialHashMap(int x_size, int y_size, int cell_size);
+    SpatialHashMap() = default;
+
 	int coord_to_cell(double coord, bool is_max=false);
 	std::tuple<double, double, double, double> structure_bbox(Physics::Structure& structure);
 	int add_structure(Physics::Structure& structure);

@@ -4,27 +4,33 @@
 #include <qDebug>
 #include <qlogging.h>
 
-GolfEngine::GolfEngine(const GolfMap& map)
-    : m_engine_timer(QTimer(this)), m_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_walls(map.m_walls),
-    m_floor_hash(SpatialHashMap(map.m_width, map.m_height, 20)), m_map(map)
+GolfEngine::GolfEngine()
+    : m_engine_timer(QTimer(this))
+{}
+
+GolfEngine::~GolfEngine() {
+    qDebug() << "QGolf destructor";
+}
+
+void GolfEngine::load_map(const GolfMap& map)
 {
+    m_hash = SpatialHashMap(map.m_width, map.m_height, 20);
+    m_floor_hash = SpatialHashMap(map.m_width, map.m_height, 20);
+    m_map = map;
+    
     auto o = GolfBall(1, map.m_start / 100, Vec2d(0, 0));
     m_objects = std::vector<Physics::Object>{o};
 
     connect(&m_engine_timer, &QTimer::timeout, this, &GolfEngine::run_tick);
     
-    for (auto& wall : m_walls) {
+    for (auto& wall : m_map.m_walls) {
         auto n_cells = m_hash.add_structure(wall);
         qDebug() << "Number of cells: " << n_cells;
     }
 
-    for (auto& floor : map.m_floors) {
+    for (auto& floor : m_map.m_floors) {
         m_floor_hash.add_structure(floor);
     }
-}
-
-GolfEngine::~GolfEngine() {
-    qDebug() << "QGolf destructor";
 }
 
 double GolfEngine::get_floor_friction(const Vec2d& position) {
