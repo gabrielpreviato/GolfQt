@@ -45,8 +45,6 @@ namespace Physics {
 			bool x_overlap = (min_x <= other_max_x && max_x >= other_min_x);
 			bool y_overlap = (min_y <= other_max_y && max_y >= other_min_y);
 
-			qDebug() << "X overlap: " << x_overlap << "; Y overlap: " << y_overlap;
-
 			return x_overlap && y_overlap;
 		}
 
@@ -58,12 +56,8 @@ namespace Physics {
 				Vec2d edgeVector = vertices[(i + 1) % vertices.size()] - vertices[i];
 				Vec2d pointVector = collidingPoint - vertices[i];
 
-				qDebug() << "pointVector" << pointVector.x << "," << pointVector.y;
-				qDebug() << "pointVector" << pointVector.x << "," << pointVector.y;
-				qDebug() << "pointVector" << pointVector.x << "," << pointVector.y;
 				// Calculate the cross product
 				double cross = edgeVector.x * pointVector.y - edgeVector.y * pointVector.x;
-				qDebug() << "Edge" << i + 1 << " " << edgeVector.x << "," << edgeVector.y << "Cross Product:" << cross;
 
 				// Assuming a clockwise definition of edges, a negative cross product
 				// indicates the point is on the right (outside) of the edge for a convex shape.

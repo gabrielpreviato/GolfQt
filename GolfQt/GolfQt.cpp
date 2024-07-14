@@ -3,13 +3,21 @@
 #include <qthread.h>
 
 GolfQt::GolfQt(QWidget *parent)
-    : QMainWindow(parent), m_gameView(GolfView(this)), m_player(GolfPlayer()),
+    : m_gameView(GolfView(this)), m_player(GolfPlayer()),
     m_engine(new GolfEngine()), m_engine_thread(new QThread())
 {
-    ui.setupUi(this);
-    this->setCentralWidget(&m_gameView);
+    // ui.setupUi(this);
+    //this->setCentralWidget(&m_gameView);
+    //setMaximumWidth(1366);
+    //setMaximumHeight(768);
+    //setMinimumWidth(1366);
+    //setMinimumHeight(768);
+    //resize(1366, 768);
+    //setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    adjustSize();
 
     connect(&m_gameView, &GolfView::clicked_impulse, &m_player, &GolfPlayer::player_impulse);
+    connect(&m_player, &GolfPlayer::strokes, &m_gameView, &GolfView::update_strokes);
     
     m_engine->moveToThread(m_engine_thread);
 //    m_engine->m_engine_timer.moveToThread(m_engine_thread);

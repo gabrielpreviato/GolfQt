@@ -93,10 +93,7 @@ public:
             direction.x += 1;
         }
 
-        qDebug() << "Direction: " << direction.x << ", " << direction.y;
-        qDebug() << "Direction unit: " << direction.unit().x << ", " << direction.unit().y;
         direction = direction.unit() * 5;
-        qDebug() << "Direction: " << direction.x << ", " << direction.y;
         m_position += direction;
         m_position.x = std::max(m_map_border+20, std::min(m_map_width+m_map_border-20, m_position.x));
         m_position.y = std::max(m_map_border+20, std::min(m_map_height+m_map_border-20, m_position.y));
