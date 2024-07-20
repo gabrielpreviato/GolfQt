@@ -3,6 +3,7 @@
 #include "GolfMap.hpp"
 #include <qDebug>
 #include <qlogging.h>
+#include <qpoint.h>
 
 GolfEngine::GolfEngine()
     : m_engine_timer(QTimer(this))
@@ -93,11 +94,10 @@ void GolfEngine::run() {
     m_engine_timer.start(1000*Physics::TICK_RATE);
 }
 
-void GolfEngine::player_impulse(QPointF cursor_pos) {
+void GolfEngine::player_impulse(QPointF impulse) {
     auto& ball = m_objects[0];
 
-    QPointF imp_vector_cm = QPointF(ball.position.x * 100, ball.position.y * 100) - cursor_pos;
-    QPointF imp_vector_m = imp_vector_cm / 100;
+    QPointF imp_vector_m = impulse / 100;
 
     ball.give_impulse(Vec2d(imp_vector_m.x(), imp_vector_m.y()));
 }

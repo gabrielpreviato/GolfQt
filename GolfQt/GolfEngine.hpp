@@ -36,7 +36,7 @@ signals:
 public slots:
 	void run_tick();
 	void run();
-	void player_impulse(QPointF cursor_pos);
+	void player_impulse(QPointF impulse);
 	void stop();
 };
 

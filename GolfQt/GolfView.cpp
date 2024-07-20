@@ -1,18 +1,22 @@
 #include "GolfView.hpp"
+#include "widgets/GolfAimArrow.hpp"
 
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
+#include <cmath>
 #include <numeric>
 #include <qDebug>
 #include <QCursor>
 #include <QMouseEvent>
 #include <QDebug>
+#include <qalgorithms.h>
+#include <qnamespace.h>
 #include <qpoint.h>
 #include <qwidget.h>
 
 GolfView::GolfView(QWidget* parent)
     : QWidget(parent), m_graphics_view(new QGraphicsView(this)), m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
-    m_game_layout(new QVBoxLayout(this)), m_strokes_board(new GolfStrokes(this))
+    m_game_layout(new QVBoxLayout(this)), m_strokes_board(new GolfStrokes(this)), m_golf_bar(new GolfForceBar()), m_aim_arrow(new GolfAimArrow())
 {
     int border = 20;
 
@@ -21,6 +25,7 @@ GolfView::GolfView(QWidget* parent)
     m_game_layout->addWidget(&m_fps_label);
     m_game_layout->addWidget(m_graphics_view);
     m_game_layout->addWidget(m_strokes_board);
+    m_game_layout->addWidget(m_golf_bar);
     //m_graphics_view->move(border, border);
     adjustSize();
 
@@ -85,10 +90,11 @@ void GolfView::render_static_map() {
             QPen(), brush
         );
 
-        // auto painter = QPainter();
         // painter.drawImage(polygon->boundingRect(), *(m_map.m_textures["wood"]));
         m_static_walls.push_back(polygon);
     }
+
+    m_gameScene->addItem(m_aim_arrow);    // auto painter = QPainter();
 }
 
 void GolfView::receive_objects(std::vector<Physics::Object> objects) {
@@ -98,6 +104,12 @@ void GolfView::receive_objects(std::vector<Physics::Object> objects) {
 
 void GolfView::receive_is_moving(bool is_moving) {
     m_is_moving = is_moving;
+
+    if (m_is_moving && m_aim_arrow) {
+        m_aim_arrow->setVisible(false);
+    } else if (!m_is_moving && m_aim_arrow) {
+        m_aim_arrow->setVisible(true);
+    }
 }
 
 void GolfView::render_objects() {
@@ -154,15 +166,52 @@ void GolfView::update_strokes(int strokes) {
     m_strokes_board->set_stroke_count(strokes);
 }
 
+void GolfView::mousePressEvent(QMouseEvent* event) {
+    qDebug() << event->button() << " " << Qt::LeftButton;
+    if (event->button() == Qt::LeftButton && !m_is_moving)    // Left button...
+    {
+        initialMousePos = event->pos();
+        m_golf_bar->setForce(0);
+    }
+}
+
+void GolfView::mouseMoveEvent(QMouseEvent* event) {
+    if (!m_is_moving)    // Left button...
+    {
+        currentMousePos = event->pos();
+        int forceValue = calculateForceFromMouseMovement();
+        m_golf_bar->setForce(forceValue);
+        qDebug() << forceValue;
+
+        QPointF ballPos = QPointF(m_objects[0].position.x, m_objects[0].position.y) * 100 + QPointF(200.0, 200.0);
+
+        qreal angle = atan2(ballPos.y() - currentMousePos.y(), currentMousePos.x() - ballPos.x());
+        m_aim_arrow->setAngle(angle, ballPos);
+    }
+}
+
+int GolfView::calculateForceFromMouseMovement() {
+    int deltaY = currentMousePos.x() - initialMousePos.x();
+    // Adjust the following parameters to fine-tune the force calculation:
+    int maxForce = 100;
+    int sensitivity = 5; // Higher value means more sensitive movement
+
+    int forceValue = std::max(0, std::min(maxForce, -deltaY / sensitivity));
+    return forceValue;
+}
+
 void GolfView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && !m_is_moving)    // Left button...
     {
         QPointF cursor_pos = get_cursor();
+        QPointF ballPos = m_golf_balls[0]->pos();
 
         qDebug() << "Released: " << cursor_pos.x();
 
+        QPointF direction = (ballPos - cursor_pos);
+        double size = std::sqrt(direction.x() * direction.x() + direction.y() * direction.y());
 
-        emit clicked_impulse(cursor_pos);
+        emit clicked_impulse(direction / size * m_golf_bar->m_force);
     }
 }
 
@@ -235,6 +284,6 @@ void GolfView::keyReleaseEvent(QKeyEvent* event)
 QPointF GolfView::get_cursor() {
     QPointF cursor_pos = m_graphics_view->mapToScene(this->mapFromGlobal(QCursor::pos()));
 
-    return cursor_pos - QPointF(m_border, m_border);
+    return cursor_pos;// - QPointF(m_border, m_border);
 }
 
