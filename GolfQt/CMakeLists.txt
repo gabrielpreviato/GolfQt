@@ -49,6 +49,8 @@ add_executable(${PROJECT_NAME}
     GolfCamera.hpp
     json.hpp
     widgets/GolfStrokes.hpp
+    widgets/GolfForceBar.hpp
+    widgets/GolfAimArrow.hpp
     # Add .h files here if you want them to appear in IDE project structure
 )
 
