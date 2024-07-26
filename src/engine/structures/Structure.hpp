@@ -1,13 +1,8 @@
 #pragma once
-#include <iostream>
 #include <algorithm>
-#include <cmath>
-#include <string>
-#include <utility>
 
 #include <QColor>
 
-#include "Physics-Constants.hpp"
 #include "Vec2.hpp"
 #include "Line2.hpp"
 #include <qDebug>

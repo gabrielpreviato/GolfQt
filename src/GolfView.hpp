@@ -11,9 +11,9 @@
 #include <qgraphicsview.h>
 #include <qpoint.h>
 #include <qwidget.h>
-#include "widgets/GolfAimArrow.hpp"
-#include "widgets/GolfStrokes.hpp"
-#include "widgets/GolfForceBar.hpp"
+#include "GolfAimArrow.hpp"
+#include "GolfStrokes.hpp"
+#include "GolfForceBar.hpp"
 
 #include "GolfCamera.hpp"
 #include "GolfMap.hpp"

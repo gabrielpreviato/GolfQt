@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    GolfMap map = GolfMap::load("C:/Users/prg7fe/tools/GolfQt/GolfQt/maps/map1.map");
+    GolfMap map = GolfMap::load("assets/assets/map1.map");
     GolfQt w;
 
     w.load_map(map);

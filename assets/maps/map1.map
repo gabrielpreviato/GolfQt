@@ -95,25 +95,25 @@
       "name": "wood",
       "friction": 0.9,
       "restitution": 0.9,
-      "image": "C:/Users/prg7fe/tools/GolfQt/GolfQt/imgs/wood_small.jpg"
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/wood_small.jpg"
     },
     {
       "name": "grass",
       "friction": 1.4,
       "restitution": 0.4,
-      "image": "C:/Users/prg7fe/tools/GolfQt/GolfQt/imgs/grass.jpg"
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/grass.jpg"
     },
     {
       "name": "sand",
       "friction": 2.8,
       "restitution": 0.2,
-      "image": "C:/Users/prg7fe/tools/GolfQt/GolfQt/imgs/sand.jpg"
+      "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/sand.jpg"
     },
     {
         "name": "black",
         "friction": 0.0,
         "restitution": 0.0,
-        "image": "C:/Users/prg7fe/tools/GolfQt/GolfQt/imgs/black.jpg"
+        "image": "C:/Users/gabri/GolfQt/GolfQt/imgs/black.jpg"
     }
   ]
 }

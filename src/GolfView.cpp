@@ -1,5 +1,5 @@
 #include "GolfView.hpp"
-#include "widgets/GolfAimArrow.hpp"
+#include "GolfAimArrow.hpp"
 
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
