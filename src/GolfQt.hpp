@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QMainWindow>
-#include "ui_GolfQt.h"
 
 #include "GolfView.hpp"
 #include "GolfPlayer.hpp"
@@ -9,7 +8,7 @@
 #include <QMouseEvent>
 #include <QThread>
 
-class GolfQt : public QMainWindow
+class GolfQt : public QWidget
 {
     Q_OBJECT
 
@@ -24,9 +23,6 @@ public:
     
     GolfEngine* m_engine = nullptr;
     QThread* m_engine_thread = nullptr;
-
-private:
-    Ui::GolfQtClass ui;
 
 signals:
     void start_engine();

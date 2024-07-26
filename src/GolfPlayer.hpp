@@ -13,4 +13,7 @@ public:
 
 public slots:
 	void player_impulse(QPointF cursor_pos);
+
+signals:
+    void strokes(int stroke);
 };

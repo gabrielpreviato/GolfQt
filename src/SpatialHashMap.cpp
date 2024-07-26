@@ -67,13 +67,9 @@ int SpatialHashMap::add_structure(const GolfFloor& floor) {
 
     auto [min_x, min_y, max_x, max_y] = structure_bbox(rect_structure);
 
-    qDebug() << min_x << "; " << min_y << "; " << max_x << "; " << max_y;
-    qDebug() << coord_to_cell(min_y) << "; " << coord_to_cell(max_y, true) << "; " << coord_to_cell(min_x) << "; " << coord_to_cell(max_x, true);
-
     unsigned int n_mappings = 0;
     for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {
         for (auto j = coord_to_cell(min_x); j <= coord_to_cell(max_x, true); j++) {
-            qDebug() << "Adding floor to cell: " << i << ", " << j;
             floor_map[i][j].push_back(floor);
             n_mappings++;
         }
@@ -84,8 +80,6 @@ int SpatialHashMap::add_structure(const GolfFloor& floor) {
 
 std::vector<Physics::Structure*> SpatialHashMap::broad_collision(Physics::Structure& object) {
     auto [min_x, min_y, max_x, max_y] = structure_bbox(object);
-
-    qDebug() << min_x << "; " << min_y << "; " << max_x << "; " << max_y;
 
     auto possible_obj_collision = std::unordered_set<Physics::Structure*>{};
     for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {

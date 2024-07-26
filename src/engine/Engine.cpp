@@ -3,6 +3,7 @@
 #include "GolfMap.hpp"
 #include <qDebug>
 #include <qlogging.h>
+#include <qpoint.h>
 
 GolfEngine::GolfEngine()
     : m_engine_timer(QTimer(this))
@@ -34,7 +35,6 @@ void GolfEngine::load_map(const GolfMap& map)
 }
 
 double GolfEngine::get_floor_friction(const Vec2d& position) {
-    qDebug() << "Getting floor friction";
     auto& floor = m_floor_hash.get_floor(position);
     return floor.m_friction;    
 }
@@ -42,14 +42,10 @@ double GolfEngine::get_floor_friction(const Vec2d& position) {
 void GolfEngine::run_tick() {
     for (auto& o : m_objects) {
 		GolfBall future_o{o};
-        qDebug() << "future_o radius is: " << future_o.radius;
 
         if (std::abs(future_o.speed.x) > Physics::SIGMA || std::abs(future_o.speed.y) > Physics::SIGMA) {
             Vec2d friction = (future_o.speed * (-1.0)).unit() * get_floor_friction(future_o.position * 100);
-            qDebug() << "friction is: " << friction.x << ", " << friction.y;
             future_o.tick(friction);
-            qDebug() << "future_o speed is: " << future_o.speed.x << ", " << future_o.speed.y;
-            qDebug() << "future_o friction is: " << friction.x << ", " << friction.y;
             future_o.m_is_moving = true;
             emit is_moving(true);
         }
@@ -61,7 +57,6 @@ void GolfEngine::run_tick() {
         //qDebug() << "o position x is: " << o.position.x ;
         //qDebug() << "o speed x is: " << o.speed.x;
         auto possible_collisions = m_hash.broad_collision(future_o);
-        qDebug() << "Possbile collision objects: " << possible_collisions.size();
         for (auto& wall : possible_collisions) {
             auto bbox = future_o.bounding_box();
 
@@ -71,10 +66,6 @@ void GolfEngine::run_tick() {
                     future_o.reverse_tick(0.5);
 					edge = wall->detect_collision_edge(future_o.position * 100);
 				}
-                qDebug() << "Collision! " << edge;
-
-				qDebug() << "Wall: " << wall->v1.x << ", " << wall->v1.y << "; " << wall->v2.x << ", " << wall->v2.y << "; " << wall->v3.x << ", " << wall->v3.y << "; " << wall->v4.x << ", " << wall->v4.y;
-				qDebug() << "Ball: " << bbox.v1.x << ", " << bbox.v1.y << "; " << bbox.v2.x << ", " << bbox.v2.y << "; " << bbox.v3.x << ", " << bbox.v3.y << "; " << bbox.v4.x << ", " << bbox.v4.y;
 				
                 Vec2d collisionNormal = wall->get_normal(edge); // You need to implement get_normal() based on your wall structure
 
@@ -86,7 +77,6 @@ void GolfEngine::run_tick() {
             }
         }
 
-        qDebug() << "o radius is: " << o.radius;
         o.speed = future_o.speed;
         o.position = future_o.position;
 
@@ -101,16 +91,13 @@ void GolfEngine::run_tick() {
 }
 
 void GolfEngine::run() {
-    qDebug() << "Hello World!";
-    qDebug() << "Gravity is: " << Physics::GRAVITY;
     m_engine_timer.start(1000*Physics::TICK_RATE);
 }
 
-void GolfEngine::player_impulse(QPointF cursor_pos) {
+void GolfEngine::player_impulse(QPointF impulse) {
     auto& ball = m_objects[0];
 
-    QPointF imp_vector_cm = QPointF(ball.position.x * 100, ball.position.y * 100) - cursor_pos;
-    QPointF imp_vector_m = imp_vector_cm / 100;
+    QPointF imp_vector_m = impulse / 100;
 
     ball.give_impulse(Vec2d(imp_vector_m.x(), imp_vector_m.y()));
 }

@@ -6,4 +6,5 @@ GolfPlayer::GolfPlayer()
 
 void GolfPlayer::player_impulse(QPointF cursor_pos) {
     m_strokes++;
+    emit strokes(m_strokes);
 }
