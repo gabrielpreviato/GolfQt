@@ -17,15 +17,11 @@ public:
     
     void load_map(const GolfMap& map);
 
-private:
-	std::vector<Physics::Object> m_objects;
-	SpatialHashMap m_hash;
-    SpatialHashMap m_floor_hash;
-    GolfMap m_map;
-	
-    QTimer m_engine_timer;
-
-    double get_floor_friction(const Vec2d& position);
+public slots:
+	void run_tick();
+	void run();
+	void player_impulse(QPointF impulse);
+	void stop();
 
 signals:
 	void objects(std::vector<Physics::Object>);
@@ -33,10 +29,14 @@ signals:
 	void walls(std::vector<Physics::Structure>);
 	void finished();
 
-public slots:
-	void run_tick();
-	void run();
-	void player_impulse(QPointF impulse);
-	void stop();
+private:
+	std::vector<Physics::Object> m_balls;
+	SpatialHashMap m_hash;
+    SpatialHashMap m_floor_hash;
+    GolfMap m_map;
+	
+    QTimer m_engine_timer;
+
+    double get_floor_friction(const Vec2d& position);
 };
 
