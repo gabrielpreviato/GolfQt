@@ -11,7 +11,7 @@ public:
     ~GolfBall() {}
 
     bool m_is_moving();
-    QRectF bounding_box();
+    const QRectF bounding_box() const override;
     
     double radius = 6;
 };
