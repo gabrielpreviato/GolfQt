@@ -66,3 +66,8 @@ public:
         //m_path.closeSubpath();
     }
 };
+
+namespace GolfEngine {
+    static GolfFloor DefaultFloor = GolfFloor(1.0, "default");
+}
+
