@@ -35,6 +35,6 @@ const GolfFloor& FloorHashMap::get_floor(const QVector2D& position) const {
         }
     }
 
-    return GolfEngine::DefaultFloor;
+    return DefaultObjects::DefaultFloor;
 }
 
