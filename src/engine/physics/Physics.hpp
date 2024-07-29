@@ -23,7 +23,7 @@ namespace Physics {
         void zero_normalize(const double sigma);
 		void tick(const QVector2D& force);
 		void reverse_tick(double rate);
-		QRectF bounding_box();
+		virtual const QRectF bounding_box() const;
 		
 		double mass;
 		QVector2D position;
