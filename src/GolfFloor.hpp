@@ -67,7 +67,7 @@ public:
     }
 };
 
-namespace GolfEngine {
+namespace DefaultObjects {
     static GolfFloor DefaultFloor = GolfFloor(1.0, "default");
 }
 

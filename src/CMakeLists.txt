@@ -5,7 +5,6 @@ target_sources(${PROJECT_NAME}
     GolfView.cpp
     GolfScene.cpp
     GolfQt.cpp
-    SpatialHashMap.cpp
     GolfMap.cpp
     GolfPlayer.cpp
     GolfWall.cpp
