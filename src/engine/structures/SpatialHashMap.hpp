@@ -2,7 +2,7 @@
 #include <tuple>
 
 #include <QRectF>
-#include "Structure.hpp"
+#include "GolfStructure.hpp"
 
 class SpatialHashMap {
 public:
@@ -10,9 +10,9 @@ public:
     SpatialHashMap() = default;
 
 	int coord_to_cell(double coord, bool is_max=false) const;
-	std::tuple<double, double, double, double> structure_bbox(Physics::Structure& structure);
+	std::tuple<double, double, double, double> structure_bbox(GolfStructure& structure);
 	
-    int add_structure(Physics::Structure& structure);
+    int add_structure(GolfStructure& structure);
 
 protected:
 	int x_size, y_size;
