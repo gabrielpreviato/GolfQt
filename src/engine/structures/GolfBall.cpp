@@ -11,3 +11,16 @@ const QRectF GolfBall::bounding_box() const {
         position.toPointF() + QPointF(radius, radius)
     );
 }
+
+bool GolfBall::detect_collision(const GolfBall& other) const {
+    return bounding_box().intersects(other.bounding_box());
+}
+
+bool GolfBall::detect_collision(const QRectF& other) const {
+    return bounding_box().intersects(other);
+}
+
+bool GolfBall::detect_collision(const Physics::Structure& other) const {
+    return other.m_polygon.intersects({bounding_box()});
+}
+
