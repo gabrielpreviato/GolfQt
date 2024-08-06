@@ -9,7 +9,7 @@ FloorHashMap::FloorHashMap(int x_size, int y_size, int cell_size)
 }
 
 int FloorHashMap::add_structure(const GolfFloor& floor) {
-    auto rect = floor.m_path.boundingRect();
+    auto rect = floor.path().boundingRect();
     double min_x, min_y, max_x, max_y;
     rect.getCoords(&min_x, &min_y, &max_x, &max_y);
 
@@ -30,7 +30,7 @@ const GolfFloor& FloorHashMap::get_floor(const QVector2D& position) const {
 
     GolfFloor* last_floor = nullptr;
     for (auto& floor : floor_map[i][j] | std::views::reverse) {
-        if (floor.m_path.contains(QPointF(position.x(), position.y()))) {
+        if (floor.path().contains(QPointF(position.x(), position.y()))) {
             return floor;
         }
     }

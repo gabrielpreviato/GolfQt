@@ -22,21 +22,21 @@ int CollisionHashMap::add_structure(const GolfStructure& structure) {
     return n_mappings;
 }
 
-const std::vector<GolfStructure*> CollisionHashMap::broad_collision(const QRectF& object) const {
+const std::vector<const GolfStructure*> CollisionHashMap::broad_collision(const QRectF& object) const {
     double min_x, min_y, max_x, max_y;
     object.getCoords(&min_x, &min_y, &max_x, &max_y);
 
-    auto possible_obj_collision = std::unordered_set<GolfStructure*>{};
+    auto possible_obj_collision = std::unordered_set<const GolfStructure*>{};
     for (auto i = coord_to_cell(min_y); i <= coord_to_cell(max_y, true); i++) {
         for (auto j = coord_to_cell(min_x); j <= coord_to_cell(max_x, true); j++) {
             possible_obj_collision.insert(collision_map[i][j].begin(), collision_map[i][j].end());
         }
     }
 
-    return std::vector<GolfStructure*>(possible_obj_collision.begin(), possible_obj_collision.end());
+    return std::vector<const GolfStructure*>(possible_obj_collision.begin(), possible_obj_collision.end());
 }
 
-const std::vector<GolfStructure*> CollisionHashMap::broad_collision(const Physics::Object& object) const {
+const std::vector<const GolfStructure*> CollisionHashMap::broad_collision(const Physics::Object& object) const {
     QRectF ball_structure = object.bounding_box();
 
     return broad_collision(ball_structure);

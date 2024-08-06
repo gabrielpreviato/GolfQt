@@ -20,7 +20,7 @@ bool GolfBall::detect_collision(const QRectF& other) const {
     return bounding_box().intersects(other);
 }
 
-bool GolfBall::detect_collision(const Physics::Structure& other) const {
+bool GolfBall::detect_collision(const GolfStructure& other) const {
     return other.m_polygon.intersects({bounding_box()});
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "Physics.hpp"
-#include "Structure.hpp"
+#include "GolfStructure.hpp"
 
 class GolfBall : public Physics::Object {
 public:
@@ -11,14 +11,20 @@ public:
     GolfBall(const Physics::Object& other) : Physics::Object(other) {}
     ~GolfBall() {}
 
+    GolfBall& operator=(const GolfBall& ball) {
+        Physics::Object::operator=(ball);
+
+        return *this;
+    }
+
     bool m_is_moving();
     const QRectF bounding_box() const override;
-    bool detect_collision(const Object& other) const override {
+    bool detect_collision(const Physics::Object& other) const override {
         return detect_collision(other);
     }
     bool detect_collision(const GolfBall& other) const;
     bool detect_collision(const QRectF& other) const;
-    bool detect_collision(const Physics::Structure& other) const;
+    bool detect_collision(const GolfStructure& other) const;
     
     double radius = 6;
 };

@@ -22,8 +22,14 @@ void GolfAimArrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 void GolfAimArrow::setAngle(qreal angle, const QPointF& initial_pos) {
     // Calculate end points based on the angle and a fixed length
+    m_angle = angle;
     qreal arrowLength = 50.0; // Adjust as needed
-    QPointF endPoint = QPointF(arrowLength * cos(angle), -arrowLength * sin(angle)); // Inverted y-axis for QGraphicsScene
+    QPointF endPoint = QPointF(arrowLength * cos(angle), arrowLength * sin(angle)); // Inverted y-axis for QGraphicsScene
     qDebug() << initial_pos.x();
     m_line->setLine(initial_pos.x(), initial_pos.y(), initial_pos.x() + endPoint.x(), initial_pos.y() + endPoint.y());
 }
+
+double GolfAimArrow::angle() const {
+    return m_angle;
+}
+

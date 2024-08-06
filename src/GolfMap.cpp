@@ -7,7 +7,7 @@
 #include <qlogging.h>
 using json = nlohmann::json;
 
-GolfMap::GolfMap(std::vector<GolfWall> walls, std::vector<GolfFloor> floors, std::map<std::string, Material> materials, QVector2D start, QVector2D end, int width, int height)
+GolfMap::GolfMap(std::vector<GolfWall> walls, std::vector<GolfFloor> floors, std::map<std::string, Material> materials, QPointF start, QPointF end, int width, int height)
     : m_walls(walls), m_floors(floors), m_materials(materials), m_width(width), m_height(height), m_start(start), m_end(end)
 {}
 
@@ -51,10 +51,10 @@ GolfMap GolfMap::load(std::string path)
     qDebug() << data["walls"].size(); 
     std::vector<GolfWall> walls;
     for (auto& wall : data["walls"]) {
-        std::vector<Vec2d> points;
+        QList<QPointF> points;
         for (auto& point : wall["points"]) {
             qDebug() << point[0].get<double>() << "; " << point[1].get<double>() << ";" << std::string(wall["material"]);
-            points.push_back(Vec2d{point[0], point[1]});
+            points.push_back(QPointF{point[0], point[1]});
         }
         walls.push_back(GolfWall{
             points, std::string(wall["material"]), materials[std::string(wall["material"])].m_restitution
@@ -63,10 +63,10 @@ GolfMap GolfMap::load(std::string path)
 
     std::vector<GolfFloor> floors;
     for (auto& floor : data["floors"]) {
-        std::vector<Vec2d> points;
+        std::vector<QPointF> points;
         auto golf_floor = GolfFloor{materials[std::string(floor["material"])].m_friction, std::string(floor["material"])};
 
-        golf_floor.m_path.moveTo(floor["points"][0]["begin"][0], floor["points"][0]["begin"][1]);
+        golf_floor.start_path({floor["points"][0]["begin"][0], floor["points"][0]["begin"][1]});
         for (auto& point : floor["points"]) {    
             auto path_type = std::string(point["type"]);
             if (path_type == "line") {
@@ -82,7 +82,7 @@ GolfMap GolfMap::load(std::string path)
             }
             // qDebug() << point[0].get<double>() << "; " << point[1].get<double>() << ";" << std::string(floor["material"]);
         }
-        golf_floor.m_path.closeSubpath();
+        golf_floor.close_path();
 
         floors.push_back(golf_floor);
     }
@@ -92,7 +92,7 @@ GolfMap GolfMap::load(std::string path)
     hole_floor.add_floor(QPointF{data["finish_position"][0], data["finish_position"][1]}, 10);
     floors.push_back(hole_floor);
 
-    return GolfMap{walls, floors, materials, QVector2D{data["starting_position"][0], data["starting_position"][1]}, 
-        QVector2D{data["finish_position"][0], data["finish_position"][1]}, data["width"], data["height"]};
+    return GolfMap{walls, floors, materials, QPointF{data["starting_position"][0], data["starting_position"][1]}, 
+        QPointF{data["finish_position"][0], data["finish_position"][1]}, data["width"], data["height"]};
 }
 

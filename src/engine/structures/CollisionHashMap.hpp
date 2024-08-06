@@ -13,8 +13,8 @@ public:
     CollisionHashMap() = default;
 
     int add_structure(const GolfStructure& structure);
-	const std::vector<GolfStructure*> broad_collision(const QRectF& object) const;
-	const std::vector<GolfStructure*> broad_collision(const Physics::Object& object) const;        
+	const std::vector<const GolfStructure*> broad_collision(const QRectF& object) const;
+	const std::vector<const GolfStructure*> broad_collision(const Physics::Object& object) const;        
 
 private:
     std::vector<std::vector<std::vector<const GolfStructure*>>> collision_map;

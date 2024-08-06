@@ -1,8 +1,10 @@
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-    Structure.cpp
+    GolfStructure.cpp
+    GolfWall.cpp
     GolfBall.cpp
+    GolfFloor.cpp
     SpatialHashMap.cpp
     FloorHashMap.cpp
     CollisionHashMap.cpp

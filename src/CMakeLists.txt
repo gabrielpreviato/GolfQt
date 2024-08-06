@@ -7,7 +7,6 @@ target_sources(${PROJECT_NAME}
     GolfQt.cpp
     GolfMap.cpp
     GolfPlayer.cpp
-    GolfWall.cpp
 )
 
 add_subdirectory(engine)

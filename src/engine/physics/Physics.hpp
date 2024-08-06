@@ -23,8 +23,16 @@ namespace Physics {
         void zero_normalize(const double sigma);
 		void tick(const QVector2D& force);
 		void reverse_tick(double rate);
-		virtual const QRectF bounding_box() const;
-        virtual bool detect_collision(const Object& other) const;
+		virtual const QRectF bounding_box() const = 0;
+        virtual bool detect_collision(const Object& other) const = 0;
+
+        Object& operator=(const Object& o) {
+            mass = o.mass;
+            position = o.position;
+            speed = o.speed;
+
+            return *this;
+        }
 		
 		double mass;
 		QVector2D position;

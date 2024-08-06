@@ -1,6 +1,7 @@
 #include "GolfEngine.hpp"
 #include "GolfBall.hpp"
 #include "GolfMap.hpp"
+#include "Physics-Constants.hpp"
 #include <qDebug>
 #include <qlogging.h>
 #include <qpoint.h>
@@ -15,12 +16,12 @@ GolfEngine::~GolfEngine() {
 
 void GolfEngine::load_map(const GolfMap& map)
 {
-    m_hash = SpatialHashMap(map.m_width, map.m_height, 20);
-    m_floor_hash = SpatialHashMap(map.m_width, map.m_height, 20);
+    m_hash = CollisionHashMap(map.m_width, map.m_height, 20);
+    m_floor_hash = FloorHashMap(map.m_width, map.m_height, 20);
     m_map = map;
     
-    auto o = GolfBall(1, map.m_start / 100, Vec2d(0, 0));
-    m_objects = std::vector<Physics::Object>{o};
+    auto o = GolfBall(1, QVector2D(map.m_start.x(), map.m_start.y()), QVector2D(0, 0));
+    m_balls = std::vector<GolfBall>{o};
 
     connect(&m_engine_timer, &QTimer::timeout, this, &GolfEngine::run_tick);
     
@@ -34,60 +35,72 @@ void GolfEngine::load_map(const GolfMap& map)
     }
 }
 
-double GolfEngine::get_floor_friction(const Vec2d& position) {
+double GolfEngine::get_floor_friction(const QVector2D& position) const {
     auto& floor = m_floor_hash.get_floor(position);
-    return floor.m_friction;    
+    return floor.friction();    
 }
 
 void GolfEngine::run_tick() {
-    for (auto& o : m_objects) {
-		GolfBall future_o{o};
+    for (auto& ball : m_balls) {
+		GolfBall future_ball{ball};
 
-        if (std::abs(future_o.speed.x) > Physics::SIGMA || std::abs(future_o.speed.y) > Physics::SIGMA) {
-            Vec2d friction = (future_o.speed * (-1.0)).unit() * get_floor_friction(future_o.position * 100);
-            future_o.tick(friction);
-            future_o.m_is_moving = true;
-            emit is_moving(true);
+        if (future_ball.m_is_moving()) {
+            double floor_friction = get_floor_friction(future_ball.position);
+            QVector2D friction = (future_ball.speed * (-1.0)).normalized() * floor_friction;
+            qDebug() << "Friction: " << friction;
+            future_ball.tick(friction);
+            qDebug() << "Ball speed after tick: " << future_ball.speed;
         }
         else {
-            future_o.tick(Vec2d(0, 0));
-            future_o.m_is_moving = false;
-            emit is_moving(false);
+            future_ball.tick(QVector2D(0, 0));
         }
         //qDebug() << "o position x is: " << o.position.x ;
         //qDebug() << "o speed x is: " << o.speed.x;
-        auto possible_collisions = m_hash.broad_collision(future_o);
+        auto possible_collisions = m_hash.broad_collision(future_ball);
         for (auto& wall : possible_collisions) {
-            auto bbox = future_o.bounding_box();
+            auto bbox = future_ball.bounding_box();
 
-            if (bbox.projections_overlap(*wall)) {
-                int edge = wall->detect_collision_edge(future_o.position * 100);
+            if (future_ball.detect_collision(*wall)) {
+                auto ball_position = QPointF(future_ball.position.x(), future_ball.position.y());
+                int edge = wall->detect_collision_edge(ball_position);
 				while (edge == -1) {
-                    future_o.reverse_tick(0.5);
-					edge = wall->detect_collision_edge(future_o.position * 100);
+                    future_ball.reverse_tick(0.2);
+					edge = wall->detect_collision_edge(ball_position);
 				}
 				
-                Vec2d collisionNormal = wall->get_normal(edge); // You need to implement get_normal() based on your wall structure
+                QPointF collisionNormal = wall->get_normal(edge); // You need to implement get_normal() based on your wall structure
 
-                auto new_speed = future_o.speed.reflect(collisionNormal);
-                new_speed = new_speed * (future_o.speed.length() / new_speed.length());
+                auto new_speed = future_ball.speed - 2 * QVector2D::dotProduct(future_ball.speed, QVector2D(collisionNormal.x(), collisionNormal.y())) * QVector2D(collisionNormal.x(), collisionNormal.y());
+                
+                if (new_speed.length() < 0.1) {
+                    new_speed = QVector2D(0, 0);
+                } else {
+                    new_speed = new_speed * (future_ball.speed.length() / new_speed.length());
+                }
 
-                future_o.speed = new_speed * wall->m_restitution;
-                future_o.position -= collisionNormal * 0.01; // Adjust the multiplier as needed
+                qDebug() << "New speed: " << new_speed;
+                qDebug() << "New speed * wall->m_restitution: " << new_speed * wall->m_restitution;
+                //exit(0);
+
+                future_ball.speed = new_speed * wall->m_restitution;
+                future_ball.position = future_ball.position + QVector2D(collisionNormal.x(), collisionNormal.y()); // Adjust the multiplier as needed
             }
         }
 
-        o.speed = future_o.speed;
-        o.position = future_o.position;
+        ball.speed = future_ball.speed;
+        ball.position = future_ball.position;
 
-        if ((m_map.m_end.x/100 - 0.1 <= future_o.position.x && future_o.position.x <= m_map.m_end.x/100 + 0.1) && 
-            (m_map.m_end.y/100 - 0.1 <= future_o.position.y && future_o.position.y <= m_map.m_end.y/100 + 0.1) && 
-            !future_o.m_is_moving) {
+        qDebug() << "Ball speed: " << ball.speed;
+        qDebug() << "future_ball speed: " << future_ball.speed;
+
+        if ((m_map.m_end.x() - 1 <= future_ball.position.x() && future_ball.position.x() <= m_map.m_end.x() + 1) && 
+            (m_map.m_end.y() - 1 <= future_ball.position.y() && future_ball.position.y() <= m_map.m_end.y() + 1) && 
+            !future_ball.m_is_moving()) {
             stop();
         }
     }
 
-    emit objects(m_objects);
+    emit objects(m_balls);
 }
 
 void GolfEngine::run() {
@@ -95,11 +108,11 @@ void GolfEngine::run() {
 }
 
 void GolfEngine::player_impulse(QPointF impulse) {
-    auto& ball = m_objects[0];
+    auto& ball = m_balls[0];
 
-    QPointF imp_vector_m = impulse / 100;
+    QPointF imp_vector_m = impulse * 5;
 
-    ball.give_impulse(Vec2d(imp_vector_m.x(), imp_vector_m.y()));
+    ball.give_impulse(QVector2D(imp_vector_m.x(), imp_vector_m.y()));
 }
 
 void GolfEngine::stop() {
