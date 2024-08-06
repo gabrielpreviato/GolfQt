@@ -1,9 +1,10 @@
 #pragma once
 
 #include "GolfMap.hpp"
-#include "Vec2.hpp"
+
+#include <QPointF>
 #include <qDebug>
-#include <algorithm>
+#include <qpoint.h>
 
 enum CameraMode
 {
@@ -14,7 +15,7 @@ enum CameraMode
 class GolfCamera
 {
 public:
-    Vec2d m_position;
+    QPointF m_position;
     bool m_direction[4] = {false};
     CameraMode m_mode = CameraMode::CAMERA_MODE_FOLLOW;
 
@@ -79,23 +80,23 @@ public:
     }
     
     void move() {
-        Vec2d direction = {0, 0};
+        QPointF direction = {0, 0};
         if (m_direction[0]) {
-            direction.y -= 1;
+            direction -= QPointF(0, 1);
         }
         if (m_direction[1]) {
-            direction.y += 1;
+            direction += QPointF(0, 1);
         }
         if (m_direction[2]) {
-            direction.x -= 1;
+            direction -= QPointF(1, 0);
         }
         if (m_direction[3]) {
-            direction.x += 1;
+            direction += QPointF(1, 0);
         }
 
-        direction = direction.unit() * 5;
+        direction = direction / QPointF::dotProduct(direction, direction) * 5;
         m_position += direction;
-        m_position.x = std::max(m_map_border+20, std::min(m_map_width+m_map_border-20, m_position.x));
-        m_position.y = std::max(m_map_border+20, std::min(m_map_height+m_map_border-20, m_position.y));
+        m_position.rx() = std::max(m_map_border+20, std::min(m_map_width+m_map_border-20, m_position.x()));
+        m_position.ry() = std::max(m_map_border+20, std::min(m_map_height+m_map_border-20, m_position.y()));
     }
 };

@@ -7,6 +7,7 @@
 class GolfAimArrow : public QGraphicsItem {
 private:
     QGraphicsLineItem* m_line;
+    double m_angle;
 public:
     GolfAimArrow(QGraphicsItem *parent = nullptr);
     ~GolfAimArrow();
@@ -14,4 +15,5 @@ public:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void setAngle(qreal angle, const QPointF& initial_pos);
+    double angle() const;
 };

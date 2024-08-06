@@ -12,6 +12,7 @@
 #include <qpoint.h>
 #include <qwidget.h>
 #include "GolfAimArrow.hpp"
+#include "GolfBall.hpp"
 #include "GolfStrokes.hpp"
 #include "GolfForceBar.hpp"
 
@@ -43,7 +44,7 @@ private:
     std::vector<QGraphicsItem*> m_golf_balls{};
     std::vector<QGraphicsItem*> m_static_walls{};
     std::vector<QGraphicsItem*> m_static_floors{};
-    std::vector<Physics::Object> m_objects{};
+    std::vector<GolfBall> m_balls{};
     GolfMap m_map;
     GolfCamera m_camera;
 
@@ -54,7 +55,9 @@ private:
     QPoint currentMousePos;
 
     bool m_is_moving = false;
+
     GolfAimArrow* m_aim_arrow;
+    bool m_is_aiming = false;
 
     void render_static_map();
     void render_objects();
@@ -69,7 +72,7 @@ protected:
     void keyReleaseEvent(QKeyEvent* event) override;
 
 public slots:
-    void receive_objects(std::vector<Physics::Object>);
+    void receive_objects(std::vector<GolfBall>);
     void receive_is_moving(bool is_moving);
     void update_strokes(int strokes);
 

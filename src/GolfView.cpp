@@ -1,5 +1,6 @@
 #include "GolfView.hpp"
 #include "GolfAimArrow.hpp"
+#include "Physics-Constants.hpp"
 
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
@@ -67,9 +68,9 @@ void GolfView::load_map(const GolfMap& map)
 void GolfView::render_static_map() {
     for (auto& floor : m_map.m_floors) {
         auto brush = QBrush();
-        brush.setTextureImage(m_map.m_materials[floor.m_material].m_texture);
+        brush.setTextureImage(m_map.m_materials[floor.material()].m_texture);
         QGraphicsPathItem* path = m_gameScene->addPath(
-            floor.m_path,
+            floor.path(),
             QPen(), brush
         );
 
@@ -79,14 +80,9 @@ void GolfView::render_static_map() {
 
     for (auto& wall : m_map.m_walls) {
         auto brush = QBrush();
-        brush.setTextureImage(m_map.m_materials[wall.m_material].m_texture);
+        brush.setTextureImage(m_map.m_materials[wall.material()].m_texture);
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
-            QPolygonF(
-                QList<QPointF>{
-                    QPointF(wall.v1.x, wall.v1.y), QPointF(wall.v2.x, wall.v2.y),
-                    QPointF(wall.v3.x, wall.v3.y), QPointF(wall.v4.x, wall.v4.y)
-                }
-            ),
+            wall.m_polygon,
             QPen(), brush
         );
 
@@ -97,19 +93,13 @@ void GolfView::render_static_map() {
     m_gameScene->addItem(m_aim_arrow);    // auto painter = QPainter();
 }
 
-void GolfView::receive_objects(std::vector<Physics::Object> objects) {
-    m_objects.clear();
-    std::copy(objects.begin(), objects.end(), std::back_inserter(m_objects));
+void GolfView::receive_objects(std::vector<GolfBall> objects) {
+    m_balls.clear();
+    std::copy(objects.begin(), objects.end(), std::back_inserter(m_balls));
 }
 
 void GolfView::receive_is_moving(bool is_moving) {
     m_is_moving = is_moving;
-
-    if (m_is_moving && m_aim_arrow) {
-        m_aim_arrow->setVisible(false);
-    } else if (!m_is_moving && m_aim_arrow) {
-        m_aim_arrow->setVisible(true);
-    }
 }
 
 void GolfView::render_objects() {
@@ -120,8 +110,14 @@ void GolfView::render_objects() {
     }
     m_golf_balls.clear();
 
-    for (auto& object : m_objects) {
-        QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(object.position.x*100-object.radius, object.position.y*100-object.radius, object.radius*2, object.radius*2), QPen(Qt::black), QBrush(Qt::white));
+    if (m_is_aiming) {
+        m_aim_arrow->setVisible(true);
+    } else {
+        m_aim_arrow->setVisible(false);
+    }
+
+    for (auto& object : m_balls) {
+        QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(object.position.x()-object.radius, object.position.y()-object.radius, object.radius*2, object.radius*2), QPen(Qt::black), QBrush(Qt::white));
         golf_ball->setAcceptedMouseButtons(Qt::NoButton);
         //qDebug() << "Redered object:" << object.position.x << ", " << object.position.y;
         m_golf_balls.push_back(golf_ball);
@@ -131,23 +127,11 @@ void GolfView::render_objects() {
         }
     }
 
-    if (!m_is_moving) {
-        QPointF cursor_pos = get_cursor();
-        if (m_objects.size() > 0 && m_objects[0].speed.y == 0 && m_objects[0].speed.x == 0) {
-            QGraphicsLineItem* aim_line = m_gameScene->addLine(QLineF(m_objects[0].position.x * 100, m_objects[0].position.y * 100, cursor_pos.x(), cursor_pos.y()));
-            aim_line->setAcceptedMouseButtons(Qt::NoButton);
-            m_golf_balls.push_back(aim_line);
-
-            QGraphicsEllipseItem* golf_ball = m_gameScene->addEllipse(QRectF(cursor_pos.x()-4, cursor_pos.y()-4, 8, 8));
-            golf_ball->setAcceptedMouseButtons(Qt::NoButton);
-            m_golf_balls.push_back(golf_ball); 
-        }
-    }
 
     if (m_camera.m_mode == CameraMode::CAMERA_MODE_FREE) {
         m_camera.move();
     }
-    m_graphics_view->centerOn(m_camera.m_position.x, m_camera.m_position.y);
+    m_graphics_view->centerOn(m_camera.m_position.x(), m_camera.m_position.y());
 
     qint64 elapsedMs = m_fps_timer.elapsed(); // Time in milliseconds
     double frameTimeSeconds = elapsedMs / 1000.0; 
@@ -172,6 +156,7 @@ void GolfView::mousePressEvent(QMouseEvent* event) {
     {
         initialMousePos = event->pos();
         m_golf_bar->setForce(0);
+        m_is_aiming = true;
     }
 }
 
@@ -183,7 +168,7 @@ void GolfView::mouseMoveEvent(QMouseEvent* event) {
         m_golf_bar->setForce(forceValue);
         qDebug() << forceValue;
 
-        QPointF ballPos = QPointF(m_objects[0].position.x, m_objects[0].position.y) * 100 + QPointF(200.0, 200.0);
+        QPointF ballPos = QPointF(m_balls[0].position.x(), m_balls[0].position.y()) + QPointF(200.0, 200.0);
 
         qreal angle = atan2(ballPos.y() - currentMousePos.y(), currentMousePos.x() - ballPos.x());
         m_aim_arrow->setAngle(angle, ballPos);
@@ -191,12 +176,17 @@ void GolfView::mouseMoveEvent(QMouseEvent* event) {
 }
 
 int GolfView::calculateForceFromMouseMovement() {
-    int deltaY = currentMousePos.x() - initialMousePos.x();
+    int delta_x = std::abs(currentMousePos.x() - initialMousePos.x());
+    int delta_y = std::abs(currentMousePos.y() - initialMousePos.y());
+    int distance = std::sqrt(delta_x * delta_x + delta_y * delta_y);
+
+    qDebug() << "Distance: " << distance;
+
     // Adjust the following parameters to fine-tune the force calculation:
     int maxForce = 100;
     int sensitivity = 5; // Higher value means more sensitive movement
 
-    int forceValue = std::max(0, std::min(maxForce, -deltaY / sensitivity));
+    int forceValue = std::max(0, std::min(maxForce, distance / sensitivity));
     return forceValue;
 }
 
@@ -208,10 +198,13 @@ void GolfView::mouseReleaseEvent(QMouseEvent* event) {
 
         qDebug() << "Released: " << cursor_pos.x();
 
-        QPointF direction = (ballPos - cursor_pos);
+        auto angle = m_aim_arrow->angle();
+        QPointF direction = QPointF(std::cos(angle), std::sin(angle));
         double size = std::sqrt(direction.x() * direction.x() + direction.y() * direction.y());
 
         emit clicked_impulse(direction / size * m_golf_bar->m_force);
+        m_is_aiming = false;
+        m_golf_bar->setForce(0);
     }
 }
 
