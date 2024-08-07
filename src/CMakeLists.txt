@@ -11,6 +11,7 @@ target_sources(${PROJECT_NAME}
 
 add_subdirectory(engine)
 add_subdirectory(widgets)
+add_subdirectory(controller)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
