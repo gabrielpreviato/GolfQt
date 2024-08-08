@@ -1,6 +1,8 @@
 #include "GolfKeyboard.hpp"
 
-GolfKeyboard::GolfKeyboard() {}
+GolfKeyboard::GolfKeyboard(QObject *parent) 
+    : QObject(parent)
+{}
 
 GolfKeyboard::~GolfKeyboard() {}
 

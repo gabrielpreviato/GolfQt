@@ -10,7 +10,7 @@ class GolfMouse : public QObject
 {
     Q_OBJECT
 public:
-    GolfMouse();
+    GolfMouse(QObject *parent = nullptr);
     ~GolfMouse();
 
     bool eventFilter(QObject *obj, QEvent *event) override;

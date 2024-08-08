@@ -1,6 +1,9 @@
 #include "GolfMouse.hpp"
+#include <qobject.h>
 
-GolfMouse::GolfMouse() {}
+GolfMouse::GolfMouse(QObject *parent)
+    : QObject(parent)
+{}
 
 GolfMouse::~GolfMouse() {}
 

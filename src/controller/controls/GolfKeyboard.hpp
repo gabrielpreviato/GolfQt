@@ -10,7 +10,7 @@ class GolfKeyboard : public QObject
 {
     Q_OBJECT
 public:
-    GolfKeyboard();
+    GolfKeyboard(QObject *parent = nullptr);
     ~GolfKeyboard();
 
     bool eventFilter(QObject *obj, QEvent *event) override;
