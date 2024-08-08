@@ -2,9 +2,11 @@
 
 #include <QMainWindow>
 
-#include "GolfView.hpp"
-#include "GolfPlayer.hpp"
+#include "GolfControls.hpp"
 #include "GolfEngine.hpp"
+#include "GolfGameView.hpp"
+#include "GolfPlayer.hpp"
+#include "assets_manager/AssetsManager.hpp"
 #include <QMouseEvent>
 #include <QThread>
 
@@ -16,14 +18,19 @@ public:
     GolfQt(QWidget *parent = nullptr);
     ~GolfQt();
 
-    void load_map(const GolfMap& map);
+    void load_map(const GolfMap &map);
 
-    GolfView m_gameView;
+    GolfGameView m_gameView;
     GolfPlayer m_player;
-    
-    GolfEngine* m_engine = nullptr;
-    QThread* m_engine_thread = nullptr;
+
+    GolfControls m_controls;
+
+    GolfEngine *m_engine = nullptr;
+    QThread *m_engine_thread = nullptr;
 
 signals:
     void start_engine();
+
+private:
+    AssetsManager m_assets_manager;
 };

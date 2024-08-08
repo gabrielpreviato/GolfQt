@@ -1,0 +1,28 @@
+{
+  "materials": [
+    {
+      "name": "wood",
+      "friction": 90.0,
+      "restitution": 0.9,
+      "image": "assets/assets/wood_small.jpg"
+    },
+    {
+      "name": "grass",
+      "friction": 140.0,
+      "restitution": 0.4,
+      "image": "assets/assets/grass.jpg"
+    },
+    {
+      "name": "sand",
+      "friction": 280.0,
+      "restitution": 0.2,
+      "image": "assets/assets/sand.jpg"
+    },
+    {
+        "name": "black",
+        "friction": 0.0,
+        "restitution": 0.0,
+        "image": "assets/assets/black.jpg"
+    }
+  ]
+}

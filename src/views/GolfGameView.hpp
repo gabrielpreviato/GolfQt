@@ -6,7 +6,6 @@
 #include <QPolygonF>
 #include <QList>
 #include <QVBoxLayout>
-#include <qboxlayout.h>
 #include <qelapsedtimer.h>
 #include <qgraphicsview.h>
 #include <qpoint.h>
@@ -20,14 +19,13 @@
 #include "GolfMap.hpp"
 #include "GolfScene.hpp"
 
-#include "Physics.hpp"
 
-class GolfView : public QWidget {
+class GolfGameView : public QWidget {
     Q_OBJECT
 
 public:
-    GolfView(QWidget* parent = nullptr);
-    ~GolfView();
+    GolfGameView(QWidget* parent = nullptr);
+    ~GolfGameView();
     GolfScene* m_gameScene = nullptr;
     QGraphicsView* m_graphics_view = nullptr;
     QVBoxLayout* m_game_layout = nullptr;

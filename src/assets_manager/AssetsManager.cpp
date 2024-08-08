@@ -23,3 +23,7 @@ void AssetsManager::addMaterial(QSharedPointer<const Material> material) {
     m_materials[material->name()] = material;
 }
 
+QWeakPointer<const Material> AssetsManager::getMaterial(const std::string& name) const {
+    return m_materials[name];
+}
+

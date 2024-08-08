@@ -1,6 +1,7 @@
-#include "GolfView.hpp"
+#include "GolfGameView.hpp"
 #include "GolfAimArrow.hpp"
 #include "Physics-Constants.hpp"
+#include "assets_manager/AssetsManager.hpp"
 
 #include <QGraphicsItem>
 #include <QGraphicsEllipseItem>
@@ -8,14 +9,14 @@
 #include <numeric>
 #include <qDebug>
 #include <QCursor>
-#include <QMouseEvent>
+#include<QMouseEvent>
 #include <QDebug>
 #include <qalgorithms.h>
 #include <qnamespace.h>
 #include <qpoint.h>
 #include <qwidget.h>
 
-GolfView::GolfView(QWidget* parent)
+GolfGameView::GolfGameView(QWidget* parent)
     : QWidget(parent), m_graphics_view(new QGraphicsView(this)), m_gameScene(new GolfScene(this)), m_render_timer(QTimer(this)),
     m_game_layout(new QVBoxLayout(this)), m_strokes_board(new GolfStrokes(this)), m_golf_bar(new GolfForceBar()), m_aim_arrow(new GolfAimArrow())
 {
@@ -40,12 +41,12 @@ GolfView::GolfView(QWidget* parent)
     grabMouse();
 }
 
-GolfView::~GolfView() {
+GolfGameView::~GolfGameView() {
     m_render_timer.stop();
     delete m_gameScene;
 }
 
-void GolfView::load_map(const GolfMap& map)
+void GolfGameView::load_map(const GolfMap& map)
 {
     if (m_render_timer.isActive()) {
         m_render_timer.stop();
@@ -59,16 +60,17 @@ void GolfView::load_map(const GolfMap& map)
     m_gameScene->setSceneRect(0, 0, m_map.m_width + 400, m_map.m_height + 400);
     m_graphics_view->setScene(m_gameScene);
 
-    connect(&m_render_timer, &QTimer::timeout, this, &GolfView::render_objects);
+    connect(&m_render_timer, &QTimer::timeout, this, &GolfGameView::render_objects);
     //m_render_timer.start(1);
     m_render_timer.start(1000*Physics::TICK_RATE);
     m_fps_timer.start();
 }
 
-void GolfView::render_static_map() {
+void GolfGameView::render_static_map() {
     for (auto& floor : m_map.m_floors) {
         auto brush = QBrush();
-        brush.setTextureImage(m_map.m_materials[floor.material()].m_texture);
+        auto material = G_ASSETS_MANAGER.getMaterial(floor.material()).toStrongRef();
+        brush.setTextureImage(material.data()->texture());
         QGraphicsPathItem* path = m_gameScene->addPath(
             floor.path(),
             QPen(), brush
@@ -80,7 +82,8 @@ void GolfView::render_static_map() {
 
     for (auto& wall : m_map.m_walls) {
         auto brush = QBrush();
-        brush.setTextureImage(m_map.m_materials[wall.material()].m_texture);
+        auto material = G_ASSETS_MANAGER.getMaterial(wall.material()).toStrongRef();
+        brush.setTextureImage(material.data()->texture());
         QGraphicsPolygonItem* polygon = m_gameScene->addPolygon(
             wall.m_polygon,
             QPen(), brush
@@ -93,16 +96,16 @@ void GolfView::render_static_map() {
     m_gameScene->addItem(m_aim_arrow);    // auto painter = QPainter();
 }
 
-void GolfView::receive_objects(std::vector<GolfBall> objects) {
+void GolfGameView::receive_objects(std::vector<GolfBall> objects) {
     m_balls.clear();
     std::copy(objects.begin(), objects.end(), std::back_inserter(m_balls));
 }
 
-void GolfView::receive_is_moving(bool is_moving) {
+void GolfGameView::receive_is_moving(bool is_moving) {
     m_is_moving = is_moving;
 }
 
-void GolfView::render_objects() {
+void GolfGameView::render_objects() {
 
     for (auto& golf_ball : m_golf_balls) {
         m_gameScene->removeItem(golf_ball);
@@ -146,11 +149,11 @@ void GolfView::render_objects() {
     m_fps_timer.start();
 }
 
-void GolfView::update_strokes(int strokes) {
+void GolfGameView::update_strokes(int strokes) {
     m_strokes_board->set_stroke_count(strokes);
 }
 
-void GolfView::mousePressEvent(QMouseEvent* event) {
+void GolfGameView::mousePressEvent(QMouseEvent* event) {
     qDebug() << event->button() << " " << Qt::LeftButton;
     if (event->button() == Qt::LeftButton && !m_is_moving)    // Left button...
     {
@@ -160,7 +163,7 @@ void GolfView::mousePressEvent(QMouseEvent* event) {
     }
 }
 
-void GolfView::mouseMoveEvent(QMouseEvent* event) {
+void GolfGameView::mouseMoveEvent(QMouseEvent* event) {
     if (!m_is_moving)    // Left button...
     {
         currentMousePos = event->pos();
@@ -175,7 +178,7 @@ void GolfView::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-int GolfView::calculateForceFromMouseMovement() {
+int GolfGameView::calculateForceFromMouseMovement() {
     int delta_x = std::abs(currentMousePos.x() - initialMousePos.x());
     int delta_y = std::abs(currentMousePos.y() - initialMousePos.y());
     int distance = std::sqrt(delta_x * delta_x + delta_y * delta_y);
@@ -190,7 +193,7 @@ int GolfView::calculateForceFromMouseMovement() {
     return forceValue;
 }
 
-void GolfView::mouseReleaseEvent(QMouseEvent* event) {
+void GolfGameView::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton && !m_is_moving)    // Left button...
     {
         QPointF cursor_pos = get_cursor();
@@ -208,7 +211,7 @@ void GolfView::mouseReleaseEvent(QMouseEvent* event) {
     }
 }
 
-void GolfView::keyPressEvent(QKeyEvent* event)
+void GolfGameView::keyPressEvent(QKeyEvent* event)
 {
     if (event->isAutoRepeat()) {
         event->ignore();
@@ -243,7 +246,7 @@ void GolfView::keyPressEvent(QKeyEvent* event)
     }
 }
 
-void GolfView::keyReleaseEvent(QKeyEvent* event)
+void GolfGameView::keyReleaseEvent(QKeyEvent* event)
 {
     if (event->isAutoRepeat()) {
         event->ignore();
@@ -274,7 +277,7 @@ void GolfView::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-QPointF GolfView::get_cursor() {
+QPointF GolfGameView::get_cursor() {
     QPointF cursor_pos = m_graphics_view->mapToScene(this->mapFromGlobal(QCursor::pos()));
 
     return cursor_pos;// - QPointF(m_border, m_border);

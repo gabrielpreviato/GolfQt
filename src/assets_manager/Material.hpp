@@ -13,14 +13,14 @@ public:
     Material(nlohmann::basic_json<> json);
     ~Material();
 
-    const std::string &name() const;
-    double friction() const;
-    double restitution() const;
-    const QImage &image() const;
+    const std::string &name() const { return m_name; }
+    double friction() const { return m_friction; }
+    double restitution() const { return m_restitution; }
+    const QImage &texture() const { return m_texture; }
 
 private:
     std::string m_name;
     double m_friction;
     double m_restitution;
-    QImage m_image;
+    QImage m_texture;
 };

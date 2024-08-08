@@ -13,8 +13,11 @@ public:
     AssetsManager(std::string path="assets/assets.json");
     ~AssetsManager();
 
-    void addMaterial(QSharedPointer<const Material> material);
-    QWeakPointer<const Material> getMaterial(const QString& name) const;
+    QWeakPointer<const Material> getMaterial(const std::string& name) const;
 private:
     QMap<std::string, QSharedPointer<const Material>> m_materials;
+    void addMaterial(QSharedPointer<const Material> material);
 };
+
+inline AssetsManager G_ASSETS_MANAGER = AssetsManager();
+
